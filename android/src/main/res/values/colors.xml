@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@android:color/transparent</color>
+    <color name="colorPrimaryDark">#2b6973</color>
+    <color name="colorSecondary">#9c4777</color>
+    <color name="colorBlock">#232937</color>
+    <color name="colorThirdGrey">#5f6c78</color>
+    
+    <color name="colorAccent">#9c4777</color>
+    <color name="colorInstagram">#FCAF45</color>
+    
+    <color name="colorDestinationHome">#579ED7</color>
+    <color name="colorExperienceHome">#CD977C</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="grey">#D6D6D6</color>
+    
+    <color name="black">#000000</color>
+    <color name="black_alpha_66">#66000000</color>
+    
+    <color name="color_low">#27ae60</color>
+
+    <color name="color_medium">#e67e22</color>
+    <color name="color_bad">#c0392b</color>
+    
+    <!-- SHIMMER COLORS -->
+    <color name="color_shimmer_light">#B1ADB1</color>
+    <color name="color_shimmer_dark">#57606f</color>
+
+</resources>

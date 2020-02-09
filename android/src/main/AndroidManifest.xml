@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="com.mile.mile_navigation_engine">
+    <application>
+        <activity android:name=".activities.navigation.NavigateToPOIActivity" />
+        <activity android:name=".activities.navigation.NavigationActivity" />
+    </application>
+</manifest>

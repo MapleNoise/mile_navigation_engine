@@ -1,0 +1,351 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    
+    <style name="AppTheme.Launcher" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+    
+    <!-- Custom styles -->
+    <style name="Toolbar.White" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorControlNormal">@color/white</item>
+    </style>
+    
+    <style name="Toolbar.Yellow" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorControlNormal">@color/white</item>
+        <item name="android:textColorPrimary">@color/colorPrimary</item>
+        <item name="android:textColorSecondary">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/gilroy_semibold</item>
+        <item name="android:background">@color/white</item>
+    </style>
+    
+    <style name="Toolbar.Primary" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorControlNormal">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:titleTextColor">@color/white</item>
+        <item name="android:fontFamily">@font/gilroy_semibold</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+    
+    <style name="Toolbar.Title.Yellow" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="colorControlNormal">@color/colorSecondary</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/gilroy_semibold</item>
+        <item name="android:textSize">@dimen/text_size_toolbar</item>
+        <item name="android:paddingEnd">20dp</item>
+    </style>
+    
+    <style name="Toolbar.Primary.Title" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/gilroy_semibold</item>
+        <item name="android:textSize">@dimen/text_size_toolbar_large</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+    
+    <style name="CustomMenuFAB">
+        <item name="android:background">@drawable/fab_label_background</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/gilroy_bold</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    
+    <style name="Text.Description" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_description</item>
+        <item name="android:textColor">@color/colorThirdGrey</item>
+        <item name="android:fontFamily">@font/gilroy_regular</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+    </style>
+    
+    <style name="Text.Label.Quality" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_description</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/gilroy_regular</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+        <item name="android:background">@drawable/rounded_corners</item>
+        <item name="android:backgroundTint">@color/colorPrimary</item>
+    </style>
+    
+    <style name="Text.Destination.Title" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_title</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/gilroy_semibold</item>
+    </style>
+    
+    <style name="Text.Item.Destination.Name" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_title_card</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/gilroy_semibold</item>
+    </style>
+    
+    <style name="Text.Item.Destination.Country" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_subtitle_card</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/gilroy_light</item>
+    </style>
+    
+    <style name="Text.Title" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_title</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/gilroy_semibold</item>
+    </style>
+    
+    <style name="Text.SubTitle" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_subtitle</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/gilroy_semibold</item>
+    </style>
+    
+    <style name="Text.Alert.Title" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_subtitle</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/gilroy_semibold</item>
+    </style>
+    
+    <style name="Text.Alert.SubTitle" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_subtitle</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/gilroy_regular</item>
+    </style>
+    
+    <style name="Text.More" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_info</item>
+        <item name="android:textColor">@color/colorSecondary</item>
+        <item name="android:fontFamily">@font/gilroy_semibold</item>
+    </style>
+    
+    <style name="Text.BottomSheet.Title" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_title</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/gilroy_semibold</item>
+    </style>
+    
+    <style name="Text.BottomSheet.SubTitle" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_sub_card</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/gilroy_regular</item>
+    </style>
+    
+    <style name="Text.Card.Title" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_sub_card</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/gilroy_semibold</item>
+    </style>
+    
+    <style name="Text.Card.Title.Grey" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_title</item>
+        <item name="android:textColor">@color/colorThirdGrey</item>
+        <item name="android:fontFamily">@font/gilroy_regular</item>
+    </style>
+    
+    <style name="Text.Card.Sub" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_sub_card</item>
+        <item name="android:textColor">@color/colorThirdGrey</item>
+        <item name="android:fontFamily">@font/gilroy_regular</item>
+    </style>
+    
+    <style name="Text.Card.Overlay.Info" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_info</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+    
+    <style name="Text.Card.Route.Info" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_info</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/gilroy_regular</item>
+    </style>
+    
+    <style name="Text.Bubble.POI" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_subtitle</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/gilroy_semibold</item>
+    </style>
+    
+    <style name="Text.POI.Number" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_info</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/gilroy_regular</item>
+    </style>
+    
+    <style name="Text.Home.Title" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_title</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/gilroy_regular</item>
+    </style>
+    
+    <style name="Text.Home.Destination.Title" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_main_title</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/gilroy_extrabold</item>
+    </style>
+    
+    <style name="Text.Navigation.Stats" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">16dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/gilroy_regular</item>
+    </style>
+    
+    <style name="Text.Navigation.Stats.EndRoute" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_subtitle</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/gilroy_regular</item>
+    </style>
+    
+    <style name="Text.Navigation.InstructionView" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_title</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/gilroy_semibold</item>
+    </style>
+    
+    <style name="Text.Home.Destination.Button" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_button</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/gilroy_semibold</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:minWidth">120dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@color/white</item>
+    </style>
+    
+    <style name="Text.Timer" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">40sp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/gilroy_semibold</item>
+    </style>
+    
+    <style name="Button.Home.Menu" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_width">150dp</item>
+        <item name="android:layout_height">150dp</item>
+        <item name="android:background">@drawable/background_rounded_button</item>
+    </style>
+    
+    <style name="Card.Button.Home.Menu" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_width">150dp</item>
+        <item name="android:layout_height">150dp</item>
+        <item name="android:background">@drawable/background_rounded_button</item>
+    </style>
+    
+    <style name="Button.Navigation.Menu" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:layout_width">150dp</item>
+        <item name="android:layout_height">150dp</item>
+    </style>
+    
+    <style name="Button.Flat.Bottom" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:layout_width">150dp</item>
+        <item name="android:fontFamily">@font/gilroy_medium</item>
+    </style>
+    
+    <style name="Button.Flat.Bottom.Dark" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_width">150dp</item>
+        <item name="android:fontFamily">@font/gilroy_medium</item>
+    </style>
+    
+    <style name="Button.Flat.Bottom.Layout" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_size_button</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:fontFamily">@font/gilroy_medium</item>
+        <item name="android:layout_margin">0dp</item>
+        <item name="android:padding">0dp</item>
+    </style>
+    
+    <style name="Banner.Bottom.Layout" parent="@android:style/Widget">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/banner_min_height</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:elevation">@dimen/elevation_4dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+    
+    <style name="Banner.Bottom.Book.Text" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_button</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/gilroy_semibold</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:minWidth">120dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/spacing_small_6dp</item>
+    </style>
+    
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">@color/grey</item>
+        <item name="colorControlActivated">@color/mapbox_navigation_route_layer_congestion_yellow</item>
+    </style>
+    
+    <style name="ProgressBar.Bottom.Layout" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:indeterminateOnly">true</item>
+        <item name="android:progressTint">@color/white</item>
+        <item name="android:tint">@color/white</item>
+    </style>
+    
+    <style name="NavigationMapRoute"> <!-- USED TO CHANGE COLOR OF ROUTE ON MAPBOX -->
+        <!-- Colors -->
+        <item name="routeColor">#2196f3</item>
+        <item name="routeModerateCongestionColor">@color/mapbox_navigation_route_layer_congestion_yellow</item>
+        <item name="routeSevereCongestionColor">@color/mapbox_navigation_route_layer_congestion_red</item>
+        <item name="routeShieldColor">#0069c0</item>
+        <!-- Scales -->
+        <item name="routeScale">1.0</item>
+    </style>
+    
+    <style name="CustomInstructionView" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="navigationViewPrimary">@color/mapbox_navigation_view_color_primary</item>
+        <item name="navigationViewSecondary">@color/mapbox_navigation_view_color_secondary</item>
+        <item name="navigationViewAccent">@color/colorSecondary</item>
+        <item name="navigationViewPrimaryText">@color/mapbox_navigation_view_color_secondary</item>
+        <item name="navigationViewSecondaryText">@color/mapbox_navigation_view_color_accent_text</item>
+        <item name="navigationViewDivider">@color/mapbox_navigation_view_color_divider</item>
+        
+        <item name="navigationViewListBackground">@color/colorPrimaryDark</item>
+        
+        <item name="navigationViewBannerBackground">@android:color/transparent</item>
+        <item name="navigationViewBannerPrimaryText">@color/mapbox_navigation_view_color_banner_primary_text</item>
+        <item name="navigationViewBannerSecondaryText">@color/mapbox_navigation_view_color_banner_secondary_text</item>
+        <item name="navigationViewBannerManeuverPrimary">@color/mapbox_navigation_view_color_banner_maneuver_primary</item>
+        <item name="navigationViewBannerManeuverSecondary">@color/colorPrimary</item>
+        
+        <item name="navigationViewProgress">@color/mapbox_navigation_view_color_progress</item>
+        <item name="navigationViewProgressBackground">@color/mapbox_navigation_view_color_progress_background</item>
+        
+        <item name="navigationViewRouteStyle">@style/NavigationMapRoute</item>
+        
+        <item name="navigationViewLocationLayerStyle">@style/NavigationLocationLayerStyle</item>
+        
+        <item name="navigationViewDestinationMarker">@drawable/map_marker_light</item>
+        
+        <item name="navigationViewRouteOverviewDrawable">@drawable/ic_route_preview</item>
+        
+        <item name="navigationViewMapStyle">@string/navigation_guidance_day</item>
+    </style>
+    
+    <dimen name="banner_min_height">60dp</dimen>
+    <dimen name="banner_min_height_with_padding">65dp</dimen>
+    <dimen name="banner_expand_height">90dp</dimen>
+    <dimen name="banner_expand_height_with_padding">96dp</dimen>
+    <dimen name="elevation_4dp">4dp</dimen>
+    <dimen name="elevation_10dp">10dp</dimen>
+</resources>

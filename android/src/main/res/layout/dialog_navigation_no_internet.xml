@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorPrimary"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp">
+
+    <ImageView
+        android:id="@+id/icon_dialog"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_wifi_off"
+        android:tint="@color/white"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/text_dialog"
+        />
+
+    <TextView
+        android:id="@+id/text_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
+        android:text="@string/ERROR_MAP_NO_INTERNET"
+        android:textColor="@color/white"
+        android:layout_margin="20dp"
+        android:textSize="16sp"
+        android:textAlignment="center"
+        android:lineSpacingMultiplier="1.1"
+        app:layout_constraintTop_toBottomOf="@id/icon_dialog" />
+
+    <android.support.design.button.MaterialButton
+        android:id="@+id/location_settings_button"
+        android:layout_width="wrap_content"
+        android:minWidth="150dp"
+        android:layout_height="@dimen/height_button_rounded_edges"
+        android:layout_marginTop="20dp"
+        android:text="@string/label_ok"
+        android:textSize="@dimen/text_size_button"
+        android:textColor="@color/colorPrimary"
+
+        android:backgroundTint="@color/white"
+        android:layout_gravity="center|end"
+        app:layout_constraintTop_toBottomOf="@+id/text_dialog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="20dp"/>
+
+
+
+</androidx.constraintlayout.ConstraintLayout>

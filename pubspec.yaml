@@ -1,0 +1,21 @@
+name: mile_navigation_engine
+description: Native custom Mapbox navigation for Mile projects.
+version: 0.0.1
+author: Lionel Malloggi
+homepage:
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    androidPackage: com.mile.mile_navigation_engine
+    pluginClass: MileNavigationEnginePlugin

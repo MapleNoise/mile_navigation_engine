@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CircleFillView" >
+        <attr name="cffillColor" format="color" />
+        <attr name="cfstrokeColor" format="color" />
+        <attr name="cfstrokeWidth" format="float" />
+        <attr name="cfvalue" format="integer" />
+    </declare-styleable>
+</resources>

@@ -1,0 +1,219 @@
+<resources>
+    <string name="app_name">Saint-Étienne Balades</string>
+    
+    <string name="lorem_short" translatable="false">Lorem</string>
+    <string name="lorem_medium" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
+    <string name="lorem_long" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce neque magna, molestie ut eros vel, blandit pharetra est. Aenean accumsan.</string>
+    <string name="lorem_extralong" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vel ultricies risus. Ut in leo vitae ex finibus sagittis. Suspendisse potenti. Mauris finibus finibus pharetra. Donec sit amet felis sem. Duis accumsan faucibus tellus, a vehicula ipsum mollis non. Fusce a egestas nibh. Mauris vel turpis ullamcorper, tempus magna at.</string>
+    <string name="lorem_extraextralong" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vel ultricies risus. Ut in leo vitae ex finibus sagittis. Suspendisse potenti. Mauris finibus finibus pharetra. Donec sit amet felis sem. Duis accumsan faucibus tellus, a vehicula ipsum mollis non. Fusce a egestas nibh. Mauris vel turpis ullamcorper, tempus magna at. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vel ultricies risus. Ut in leo vitae ex finibus sagittis. Suspendisse potenti. Mauris finibus finibus pharetra. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vel ultricies risus. Ut in leo vitae ex finibus sagittis. Suspendisse potenti. Mauris finibus finibus XXXXX.</string>
+    <string name="todo" translatable="false">To do</string>
+    
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="label_loading">Loading...</string>
+    <string name="LABEL_DECLINE">No</string>
+    <string name="LABEL_DOWNLOAD_MAP">Download</string>
+    <string name="TEXT_DOWNLOAD_MAP_DESCRIPTION">Don\'t be bothere byqfdcnskcds,cds</string>
+    <string name="LABEL_MAP_SUCCESSFULLY_INSTALLED">Map installed!</string>
+    <string name="LABEL_REQUEST_GPS">We need your GPS</string>
+    <string name="ERROR_LOCALISATION_PERMISSION">error</string>
+    <string name="SETTINGS">Settings</string>
+    <string name="CANCEL">Cancel</string>
+    
+    <string name="ERROR_TOO_FAR">Too far</string>
+    <string name="YES">Yes</string>
+    <string name="LABEL_RATE_APP">Rate app</string>
+    <string name="label_ok">Ok</string>
+    <string name="SEND">Send</string>
+    <string name="LATER">Later</string>
+    <string name="IGNORE">Ignore</string>
+    
+    <string name="LOG_OUT_CONFIRMATION">Do you really want to log out?</string>
+    <string name="ASK_DELETE_HISTORIC">Do you really want to delete this item?</string>
+    <string name="ERROR_MAP_NO_INTERNET">Your internet connection has been lost. We would advise you to download this Smart Run onto your device for use without internet connection.</string>
+    <string name="QUIT_LONG">Do you really want to quit the app?</string>
+    <string name="ALERT_BATTERY_SAVEMODE_DESCRIPTION">Your smartphone is in power saving mode. In this mode, the audioguide may not function correctly. We advise that you deactivate power saving mode before continuing.</string>
+    <string name="RATE_APP_ESCAPE">Thank you! We are continuously working to improve the Runnin’City app. If you have suggestions to share with us, please send them to support@mile.eu.com . Your opinion matters a lot to us!</string> <!-- TODO translate mail -->
+    <string name="TEXT_REPORT_PROBLEM">Report a problem</string>
+    <string name="AUDIO_GUIDANCE_ACTIVE">Audio guidance : active</string>
+    <string name="AUDIO_GUIDANCE_INACTIVE">Audio guidance : inactive</string>
+    <string name="EMERGENCY_SMS_LAYOUT">Emergency SMS</string>
+    
+    <string name="GO_ROUTE">GO</string>
+    <string name="RESUME_SR">RESUME</string>
+    <string name="FINISH_SR">FINISH</string>
+    <string name="WAITING_GPS">Waiting for a valid GPS signal...</string>
+    <string name="NAVIGATION_PRESS_TO_TERMINATE">Press 3 seconds to terminate</string>
+    <string name="SIGNUP_TO_RUN">Sign up</string>
+    <string name="DOWNLOAD_MAP_DESCRIPTION">No data? No worries! Download the map here and now so you won\'t need an internet connection while on the Smart Run!</string>
+    <string name="DOWNLOAD_MAP">Download</string>
+    <string name="MORE_INFO">More info</string>
+    <string name="hint_write_comment">Write your comment</string>
+    <string name="INFORMATION">Information</string>
+    <string name="CLOSING">Closure</string>
+    <string name="CLOSING_DETAIL">The park %1$s is closed.\n-Opening %2$s \n-Closure %3$s\n\nYou are able to use other Smart Runs during these periods.</string>
+    <string name="NO_GPX_DATA">No data for this Smart Run found on your device. Please find a internet connection to retrieve them.</string>
+    <string name="LOCALISATION">EN</string>
+    <string name="ASK_SEND_SMS_EMERGENCY">Do you wish to send an emergency SMS sharing your location?</string>
+    <string name="EMERGENCY_TEXT">Emergency</string>
+    <string name="TOWARD">to</string>
+    <string name="LOCATION_ENABLE">Please turn on your location.</string>
+    <string name="REQUEST_GPS_NAVIGATION">You need to enable your location service to go for a Smart Run.</string>
+    <string name="ERROR_TTS_NOT_INSTALLED">Offline audio guidance needs to download synthesizer voice data for language \"%1$s\" </string>
+    <string name="PERMISSION_MISSING">Our application misses a permission</string>
+    <string name="SERVICE_LOCATION_DESCRIPTION">It\'s time to explore the town!</string>
+    <string name="ERROR">Error</string>
+    <string name="PAUSE_SR">Smart Run paused in...</string>
+    
+    <string name="alder">Alder</string>
+    
+    <string name="ash">Ash</string>
+    
+    <string name="birch">Birch</string>
+    <string name="cottonwood">Cottonwood</string>
+    <string name="elm">Elm</string>
+    <string name="maple">Maple</string>
+    <string name="olive">Olive</string>
+    <string name="juniper">Juniper</string>
+    <string name="jpn_cedar_cypress">Japanese Cedar and Cypress</string>
+    <string name="oak">Oak</string>
+    <string name="graminales">Graminales</string>
+    <string name="access_token" translatable="false">pk.eyJ1IjoibWlsZS1kZXYiLCJhIjoiY2s0OGJkNWEyMDB5ZTNna2Z5b2c2YTF3MCJ9.D5Ebdy0_ADSTQPTH4GCc9w</string>
+    <string name="map_uri" translatable="false">mapbox://styles/mile-dev/ck48b79hi4k1m1cmjy5iavboi</string>
+    
+    <string name="label_unknown">Unknown</string>
+    <string name="label_discover">Discover</string>
+    <string name="label_welcome">Welcome</string>
+    <string name="label_more">More</string>
+    <string name="label_less">Less</string>
+    <string name="label_display_all">Display all</string>
+    <string name="label_start_route">Start route</string>
+    <string name="label_air_quality">Air quality</string>
+    <string name="label_allergens">Allergens</string>
+    <string name="label_know_more">Know more about this</string>
+    
+    <string name="action_display_on_map">View on map</string>
+    <string name="action_visit_website">Visit website</string>
+    <string name="action_call">Call</string>
+    <string name="action_book">Book</string>
+    
+    <string name="title_routes">Our routes</string>
+    <plurals name="title_hotels">
+        <item quantity="one">Our hotel</item>
+        <item quantity="other">Our hotels</item>
+    </plurals>
+    <string name="title_destinations">Our destinations</string>
+    <string name="title_destinations_main">Destinations</string>
+    <string name="title_experiences">Our experiences</string>
+    <string name="title_experiences_main">Experiences</string>
+    <string name="title_gooddeals">Our deals</string>
+    <string name="title_information">Information</string>
+    <string name="title_preview_poi">Preview</string>
+    <string name="title_exp_categ_beauty">Beauty</string>
+    <string name="title_exp_categ_rest">Rest</string>
+    <string name="title_exp_categ_care">Care</string>
+    
+    <string name="action_start_navigation">Start navigation</string>
+    <string name="action_resume_navigation">Resume</string>
+    <string name="action_finish_navigation">Finish</string>
+    <string name="action_play">Play</string>
+    <string name="action_stop">Stop</string>
+    <string name="title_stats_resume">A few stats</string>
+    <string name="title_experience_resume">How was your experience?</string>
+    <string name="text_advice_transportation">Recommended : Do it by bike</string>
+    <string name="text_nearest_city">You are close to</string>
+    <string name="title_exp_sub_categ_doin">Do In</string>
+    <string name="title_exp_sub_categ_breath">Breathing</string>
+    <string name="title_exp_sub_categ_beauty_tuto">Tutorials</string>
+    <string name="description_intro_breath">Deeper and fuller breathing gradually supplies your body with more oxygen for the muscles, tissues, and organs as well as having a positive effect on your energy levels. Practicing controlled breathing balances you psychologically and calms you: Holding your breath in your lungs and breathing out quickly encourages better delivery of oxygen to your body and stimulates the sympathetic nervous system. The benefits are a stimulating effect. Pausing with your lungs empty and lengthening the process of breathing out stimulates the parasympathetic nervous system. The benefit this time is more relaxing.</string>
+    <string name="didyouknow_intro_breath">Did you know? We breathe around 15 to 20000 times per day! And you can learn to breathe well in every situation!</string>
+    <string name="action_start_breath">Start</string>
+    <string name="action_access_breath">Access</string>
+    <string name="label_didyouknow">Did you know?</string>
+    <string name="description_didyouknow_doin">Stimulating an energy point can allow you to reopen hidden energy stores and boost circulation around the body.</string>
+    <string name="label_energie_principles_doin">Energy principles :</string>
+    <string name="description_energie_principles_doin">Before beginning a massage, warm your hands up by rubbing them together for 15 seconds or so while breathing. Clearing and calming the mind.</string>
+    <string name="label_tonification">Invigoration</string>
+    <string name="label_scattering">Scattering</string>
+    <string name="description_tonification">To invigorate a point, press on it and twist clockwise pushing in the rhythm of the current of energy.</string>
+    <string name="description_scattering">To break up a point, press on it and twist anticlockwise pushing out of sync with the current of energy.</string>
+    <string name="label_pressure">Apply pressure</string>
+    <string name="description_pressure">The pressure should be gradual, firm, consistent, and penetrating. Never too hard. Breath calmly and sometimes deeply as you massage yourself.</string>
+    <string name="label_sanding">Sanding techniques</string>
+    <string name="description_sanding">Rub the acupressure point in a circular movement or back and forth for between 30 seconds and 3 minutes, then relax. The speed of the sanding motion can vary from slow to fast.</string>
+    <string name="description_advice_doin">You must be patient, as staying 30 seconds to 3 minutes on a point is tough and only worth it if you are patient. Some points are often sensitive at first, but that will ease after a few minutes. The points are symmetrical on the body.</string>
+    <string name="label_howtofindit">How to find it?</string>
+    <string name="label_benefits">Benefits</string>
+    <string name="label_advice">Advice</string>
+    
+    <string name="label_difficulty_beginner">Beginner</string>
+    <string name="label_difficulty_advanced">Advanced</string>
+    <string name="label_difficulty_expert">Expert</string>
+    <string name="label_inhale">Inhale for %1$d seconds</string>
+    <string name="label_exhale">Exhale for %1$d seconds</string>
+    <string name="label_rest">Stop breathing for %1$d seconds</string>
+    <string name="label_good">Good</string>
+    <string name="label_medium">Medium</string>
+    <string name="label_bad">Bad</string>
+    <string name="text_difficulty_beginner">4s Inhalation - 4s Exhalation</string>
+    <string name="text_difficulty_advanced">4s Inhalation - 6s Exhalation</string>
+    <string name="text_difficulty_expert">6s Inhalation - 8s Exhalation - 2s Rest</string>
+    <string name="label_choose_difficulty">Choose your difficulty</string>
+    <string name="label_choose_duration">Choose your duration (in mns)</string>
+    <string name="label_start_breath_activity">Touch to start</string>
+    <string name="label_discover_products">Discover all the products</string>
+    <string name="url_discover_products" translatable="false">https://www.boutique-thalassa.com</string>
+    <string name="text_secret_destination_unlocked">You have unlocked our secret destination: Issy-les-Moulineaux</string>
+    <string name="text_no_route_yet">Be patient, we are working on new routes just for you!</string>
+    <string name="message_searching_for_gps">Searching for GPS signal</string>
+    <string name="message_gps_found">GPS signal found, have a nice experience!</string>
+    <string name="message_route_not_found">We could not calculate the route.</string>
+    <string name="label_valid">Validate</string>
+    <string name="message_no_player_no_wifi">You are currently using the mobile network, the player will continue to consume 3G data.</string>
+    <string name="label_cancel">Cancel</string>
+    <string name="message_generating_route">Generating your route...</string>
+    <string name="label_press_to_pause">Press to pause</string>
+    <string name="label_press_to_resume">Press to resume</string>
+    <string name="label_distance">Length</string>
+    <string name="label_elevation">Elevation</string>
+    <string name="label_duration">Duration</string>
+    <string name="title_choose_startingpoint">Choose your starting point</string>
+    <string name="message_choose_startingpoint">Please choose a starting point</string>
+    <string name="title_route_details">Route details</string>
+    <string name="text_know_more_external_resources">Pour approfondir vos connaissances, accédez aux documents ci-dessous.</string>
+    <string name="policy_url">https://app-balades.saint-etienne.fr/mentions-legales.html</string>
+    <string name="no_url_error">Impossible to open this link.</string>
+    <string name="message_permission_camera_needed">We need access to your camera to run AR.</string>
+    <string name="title_step_instruction">Instruction %1$d/%2$d</string>
+    <string name="title_augmented_reality">Augmented Reality</string>
+    <string name="label_speed">Speed</string>
+    <string name="text_know_more_about_poi">Click on marker or press button to know more.</string>
+    <string name="label_close">Close</string>
+    <string name="action_open_location_settings">Open location settings</string>
+    <string name="text_gps_network_not_enabled">GPS not activated</string>
+    <string name="message_gps_network_not_enabled">You need to activate your location in order to start navigation.</string>
+    <string name="message_module_non_supported">Module non supported</string>
+    <string name="text_swipe_before_after">Décalez le bouton vers la gauche ou la droite pour ... [Texte à définir]</string>
+    <string name="ar_model_progress">Tentative d\'affichage, merci de patienter.</string>
+    
+    <string-array name="CATEGORIES_REPORT_PROBLEM">
+        <item>Select a category</item>
+        <item>GPS location</item>
+        <item>Navigation instructions</item>
+        <item>Internet connection</item>
+        <item>App crash</item>
+        <item>Other</item>
+    </string-array>
+    
+    <string-array name="CATEGORIES_CONTACT">
+        <item>Select a category</item>
+        <item>I had a bad experience with a Smart Run</item>
+        <item>I have an app suggestion</item>
+        <item>I would like to get my sponsored Smart Run</item>
+        <item>I\'m here for business</item>
+        <item>I have a question</item>
+        <item>I simply love Runnin\'City</item>
+    </string-array>
+
+</resources>

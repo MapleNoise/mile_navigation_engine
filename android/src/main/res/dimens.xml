@@ -1,0 +1,71 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="height_action_button">40dp</dimen>
+    <dimen name="padding_action_button">20dp</dimen>
+    <dimen name="default_corner_radius">5dp</dimen>
+    <dimen name="large_corner_radius">10dp</dimen>
+    <dimen name="height_button_rounded_edges">30dp</dimen>
+
+    <!-- SPACING LAYOUTS -->
+    <dimen name="padding_layout_medium">10dp</dimen>
+    <dimen name="padding_layout_large">20dp</dimen>
+    <dimen name="spacing_layout_xsmall">3dp</dimen>
+    <dimen name="spacing_layout_small">5dp</dimen>
+    <dimen name="spacing_layout_medium">10dp</dimen>
+    <dimen name="spacing_layout_large">20dp</dimen>
+    <dimen name="spacing_layout_xxxlarge">60dp</dimen>
+    
+    <dimen name="spacing_medium_14dp">14dp</dimen>
+    <dimen name="spacing_neg_medium_14dp">-14dp</dimen>
+    <dimen name="spacing_small_6dp">6dp</dimen>
+    <dimen name="spacing_small_4dp">4dp</dimen>
+    <dimen name="spacing_small_2dp">2dp</dimen>
+    
+    <!-- TEXT SIZES -->
+    <dimen name="text_size_main_title">40sp</dimen>
+    <dimen name="text_size_toolbar">20sp</dimen>
+    <dimen name="text_size_toolbar_large">25sp</dimen>
+    <dimen name="text_size_title">24sp</dimen>
+    <dimen name="text_size_subtitle">18sp</dimen>
+    <dimen name="text_size_info">12sp</dimen>
+    <dimen name="text_size_content">14sp</dimen>
+    <dimen name="action_bar_size">48dp</dimen>
+    <dimen name="text_size_category_title">10sp</dimen>
+    <dimen name="text_size_button">17sp</dimen>
+    <dimen name="text_size_description">15sp</dimen>
+    
+    <dimen name="text_size_picker_selected">30sp</dimen>
+    <dimen name="text_size_picker">24sp</dimen>
+    
+    <dimen name="text_size_sub_card">14sp</dimen>
+    
+    <dimen name="text_size_title_card">30sp</dimen>
+    <dimen name="text_size_subtitle_card">24sp</dimen>
+    
+    <!-- COMPONENT SIZE -->
+    <dimen name="app_bar_height">350dp</dimen>
+    <dimen name="height_card_small">120dp</dimen>
+    <dimen name="height_card_gooddeal">105dp</dimen>
+    <dimen name="width_card_small">140dp</dimen>
+    <dimen name="height_card_medium">100dp</dimen>
+    <dimen name="height_card_large">200dp</dimen>
+    <dimen name="width_card_medium">220dp</dimen>
+    <dimen name="height_peek_bottomsheet">150dp</dimen>
+    <dimen name="height_item_poi_know_more">50dp</dimen>
+    <dimen name="instruction_layout_height">110dp</dimen>
+    
+    <!-- CORNER RADIUS -->
+    <dimen name="corner_radius_small">8dp</dimen>
+    <dimen name="corner_radius_medium">16dp</dimen>
+    <dimen name="corner_radius_large">32dp</dimen>
+    <dimen name="component_navigation_route_camera_padding">56dp</dimen>
+    <dimen name="component_navigation_bottomsheet_height">96dp</dimen>
+    <dimen name="height_stats_panel">130dp</dimen>
+    <dimen name="max_height_desc">90dp</dimen>
+    <dimen name="width_bubble_poi">170dp</dimen>
+    <dimen name="height_bubble_poi">70dp</dimen>
+    <dimen name="selected_text_size">16dp</dimen>
+
+</resources>
