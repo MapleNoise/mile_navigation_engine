@@ -3,22 +3,23 @@ part of mile_navigation_lib;
 /// Turn-By-Turn Navigation Provider
 class MileNavigationEngine {
 
-  factory MileNavigationEngine({ValueSetter<bool> onRouteProgress}) {
+  factory MileNavigationEngine({ValueSetter<bool> onNavigationFinished}) {
     if (_instance == null) {
       final MethodChannel methodChannel = const MethodChannel('flutter_mapbox_navigation');
       final EventChannel eventChannel = const EventChannel('flutter_mapbox_navigation/arrival');
-      _instance = MileNavigationEngine.private(methodChannel, eventChannel, onRouteProgress);
+      _instance = MileNavigationEngine.private(methodChannel, eventChannel, onNavigationFinished);
     }
     return _instance;
   }
 
   @visibleForTesting
-  MileNavigationEngine.private(this._methodChannel, this._routeProgressEventchannel, this._routeProgressNotifier);
+  MileNavigationEngine.private(this._methodChannel, this._routeProgressEventchannel, this._routeProgressNotifier, );
 
   static MileNavigationEngine _instance;
 
   final MethodChannel _methodChannel;
   final EventChannel _routeProgressEventchannel;
+
   final ValueSetter<bool> _routeProgressNotifier;
 
   Stream<bool> _onRouteProgress;
@@ -40,20 +41,19 @@ class MileNavigationEngine {
       .then<double>((dynamic result) => result);
 
 
-  Future startNavigation({MileNavigationDatas datas, String accessToken, String mode}) async {
-    assert(datas != null);
-    assert(datas.route != null);
-    assert(datas.gpsColor != null);
+  Future startNavigation({String route,String gpsColor, String accessToken, String mode}) async {
+    assert(route != null);
+    assert(gpsColor != null);
     assert(accessToken != null);
     assert(mode != null);
     final Map<String, Object> args = <String, dynamic>{
-      "currentRoute": datas.route,
-      "gpsColor": datas.gpsColor,
+      "currentRoute": route,
+      "gpsColor": gpsColor,
       "accessToken": accessToken,
       "mode": mode,
     };
-    await _methodChannel.invokeMethod('startNavigation', args);
     _routeProgressSubscription = _streamRouteProgress.listen(_onProgressData);
+    await _methodChannel.invokeMethod('startNavigation', args);
   }
 
   ///Ends Navigation and Closes the Navigation View
@@ -63,8 +63,13 @@ class MileNavigationEngine {
   }
 
   void _onProgressData(bool arrived) {
-    if (_routeProgressNotifier != null) _routeProgressNotifier(arrived);
-    if (arrived) _routeProgressSubscription.cancel();
+    if (_routeProgressNotifier != null) {
+      _routeProgressNotifier(arrived);
+    }
+
+    if(arrived) {
+      _routeProgressSubscription.cancel();
+    }
   }
 
   Stream<bool> get _streamRouteProgress {
@@ -81,6 +86,8 @@ class MileNavigationEngine {
   }
 }
 
+typedef void OnNavigationFinished();
+
 class MileNavigationDatas {
   final String route;
   final String gpsColor;
@@ -88,11 +95,14 @@ class MileNavigationDatas {
 }
 
 class NavigationView extends StatefulWidget {
-  final MileNavigationDatas datas;
+  //final MileNavigationDatas datas;
+  final String route;
+  final String gpsColor;
   final String accessToken;
   final String mode;
+  final OnNavigationFinished onNavigationFinished;
 
-  NavigationView({@required this.datas, @required this.accessToken, this.mode,});
+  NavigationView({@required this.route, @required this.gpsColor, @required this.accessToken, @required this.mode, @required this.onNavigationFinished,});
 
   _NavigationViewState createState() => _NavigationViewState();
 }
@@ -103,8 +113,8 @@ class _NavigationViewState extends State<NavigationView> {
   @override
   initState() {
     args = <String, dynamic>{
-      "currentRoute": widget.datas.route,
-      "gpsColor": widget.datas.gpsColor,
+      "currentRoute": widget.route,
+      "gpsColor": widget.gpsColor,
       "accessToken": widget.accessToken,
       "mode": widget.mode,
     };

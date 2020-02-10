@@ -318,6 +318,7 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
 
             //bottomSheetEndBehavior?.isHideable = true
             //bottomSheetEndBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+            AppDataHolder._eventSink?.success(true)
             finish()
             //RouteMap.navigateFrom(this@NavigateToPOIActivity)
         }

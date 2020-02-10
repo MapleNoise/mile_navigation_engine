@@ -2,6 +2,7 @@ package com.mile.mile_navigation_engine.utils
 
 import com.mile.mile_navigation_engine.model.*
 import io.flutter.app.FlutterApplication
+import io.flutter.plugin.common.EventChannel
 
 /**
 Created by Corentin Houdayer on 2019-08-22
@@ -22,6 +23,8 @@ class AppDataHolder {
         var currentStartingPoint: StartingPoint? = null
 
         var gpsColor : String? = "#000000"
+
+        var _eventSink: EventChannel.EventSink? = null
     }
 
 }

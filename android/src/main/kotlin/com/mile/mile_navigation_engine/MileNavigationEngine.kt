@@ -13,6 +13,8 @@ import com.google.android.gms.location.R
 import com.google.gson.Gson
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.services.android.navigation.ui.v5.NavigationViewOptions
+import com.mapbox.services.android.navigation.v5.routeprogress.RouteProgressState
 import com.mile.mile_navigation_engine.activities.navigation.NavigateToPOIActivity
 import com.mile.mile_navigation_engine.activities.navigation.NavigationActivity
 import com.mile.mile_navigation_engine.model.LanguageCode
@@ -40,8 +42,6 @@ class MileNavigationEngine : MethodChannel.MethodCallHandler, EventChannel.Strea
     var _durationRemaining: Double? = null
 
     var PERMISSION_REQUEST_CODE: Int = 367
-
-    var _eventSink:EventChannel.EventSink? = null
 
 
     constructor(context: Context, activity: Activity) {
@@ -98,15 +98,16 @@ class MileNavigationEngine : MethodChannel.MethodCallHandler, EventChannel.Strea
         } else if(mode == NavigationMode.NAVIGATE_TO_POI) {
             intent = Intent(_activity, NavigateToPOIActivity::class.java)
         }
+
         _activity.startActivity(intent)
     }
 
     override fun onListen(args: Any?, events: EventChannel.EventSink?) {
-        _eventSink = events;
+        AppDataHolder._eventSink = events;
     }
 
     override fun onCancel(args: Any?) {
-        _eventSink = null;
+        AppDataHolder._eventSink = null;
     }
 
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
