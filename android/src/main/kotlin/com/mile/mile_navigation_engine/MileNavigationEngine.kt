@@ -34,10 +34,6 @@ class MileNavigationEngine : MethodChannel.MethodCallHandler, EventChannel.Strea
     var _activity: Activity
     var _context: Context
 
-    var _datas: Map<String, String>? = null
-    var _accessToken: String? = null
-    var _mode: String? = null
-
     var _distanceRemaining: Double? = null
     var _durationRemaining: Double? = null
 
@@ -110,29 +106,6 @@ class MileNavigationEngine : MethodChannel.MethodCallHandler, EventChannel.Strea
         AppDataHolder._eventSink = null;
     }
 
-    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when (requestCode) {
-            367 -> {
-
-                for (permission in permissions) {
-                    if (permission == Manifest.permission.ACCESS_FINE_LOCATION)
-                    {
-                        var haspermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            _activity.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                        } else {
-                            TODO("VERSION.SDK_INT < M")
-                        }
-                        if(haspermission == PackageManager.PERMISSION_GRANTED) {
-                            if(_datas != null && _accessToken != null)
-                                startNavigation(_datas!!.get("currentRoute")!!, _datas!!.get("gpsColor")!!, _accessToken!!, _mode!!)
-                        }
-                        // Not all permissions granted. Show some message and return.
-                        return
-                    }
-                }
-            }
-        }
-    }
 
     fun flutterRouteToKtRoute(routeJson: String?, gpsColor: String?) {
 

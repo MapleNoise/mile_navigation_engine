@@ -1,0 +1,144 @@
+/*
+  Localizable.strings
+  MyThalassa
+
+  Created by hassine othmane on 11/4/19.
+  Copyright © 2019 mile. All rights reserved.
+*/
+
+/// Home French
+"Welcome"="Bienvenue";
+"Destinations"="Destinations";
+"Experiences"="Expériences";
+"Discover"="Découvrez !";
+"You are close to" = "Vous êtes proche de";
+
+/// Destinations
+"Our Destinations" = "Nos Destinations";
+
+
+/// Destinations Detail
+"Our Destinations" = "Nos Destinations";
+
+
+/// Destinations - Details
+"More"="Plus";
+"Less"="Moins";
+"Our hotel"="Notre hôtel";
+"Our hotels"="Nos hôtels";
+"Our routes"="Nos Parcours";
+"View on map"="Voir sur la carte";
+
+/// Hostel - Details french
+"Our good deals" = "Nos bons plans";
+
+/// goodDeal - Detail French
+"Booking" = "Pour réserver";
+"Visit website" = "Visitez le site web !";
+"Call" = "Appelez !";
+
+/// experiences
+"Our experiences" = "Nos Expériences";
+
+"Beauty" = "Beauté";
+"Rest" = "Repos";
+"Care" = "Soins";
+
+
+
+/// Route - detail
+"Preview" = "Un avant-goût";
+"Start route" = "Démarrer le parcours";
+
+"Good" = "Bon";
+"Bad" = "Mauvais";
+"Medium" = "Moyen";
+
+"NoRoute" = "Un peu de patience, nous travaillons actuellement sur de nouveaux parcours rien que pour vous!";
+
+"Air quality" = "Qualité de l'air";
+"Air quality" = "Qualité de l'air";
+
+/// Beauty Details
+"Tutorials" = "Tutoriels";
+
+//Rest ex
+"Breathing" =  "Respiration";
+
+
+
+//Respirology details
+"Did you know ?" = "Le saviez-vous ?";
+"Benefits" = "Bénéfices";
+"Breathing details" = "On respire environ 15 à 20 000 fois par jour ! Et bien respirer en toute situation, ça s'apprend !";
+"Benefits Breathing details" = "Une respiration plus ample et plus profonde permet progressivement de disposer de plus d'oxygène pour alimenter votre organisme, vos muscles, vos tissus et vos organes et agit positivement sur votre vitalité. Pratiquer une respiration consciente est vecteur d'équilibre physiologique et d'apaisement mental : retenir sa respiration à poumon plein et pratiquer une expiration rapide favorisent une meilleure oxygénation du corps et stimulent le système nerveux sympathique. Le bénéfice est plutôt dynamisant : retenir sa respiration à poumon vide et allonger la durée d'expiration stimulent le système nerveux parasympathique. Le bénéfice est plutôt relaxant.";
+"Access" = "Accéder";
+
+
+//Respirology - settings
+"Beginner : 4s inhalation - 4s Exhalation" =  "Débutant : 4s inspiration - 4s Expiration";
+"Advanced : 4s inhalation - 6s Exhalation" =  "Confirmé : 4s inspiration - 6s Expiration";
+"Expert   : 6s inhalation - 8s Exhalation - 2s Rest"  =  "Expert : 6s inspiration - 8s Expiration - 2s Repos";
+
+
+"Inhalation_secondes" = "Inspirez pendant %@ secondes";
+"Exhalation_secondes" = "Expirez pendant %@ secondes";
+"Rest_secondes" = "Bloquez votre respiration pendant %@ secondes";
+
+
+
+"Start" = "Commencer";
+"StopAnimation" = "Arrêter";
+"Choose your difficulty" = "Choisissez votre Difficulté";
+"Choose your duration (in mns)" = "Choissisez votre durée (en min)";
+
+
+// Cares - settings
+
+"Do In" = "AutoMassage";
+"Energy principles :" = "Principes énergétiques :";
+
+
+"Energy principles :" = "Principes énergétiques :";
+"Invigoration :" = "Tonification :";
+"Scattering :" = "Dispersion :";
+"Apply pressure :" = "Pression :";
+"Massage techniques :" = "Techniques de ponçage :";
+
+"Description1" = "Stimuler un point énergétique permet de relancer un flux d'énergie ralenti ou bloqué et de favoriser sa circulation dans l'organisme.";
+"Description2" = "Avant de commencer un massage, réchauffez vos mains en les frottant l'une contre l'autre, pendant 15 secondes environ en respirant. Recherchez le calme mental.";
+"Description3" = "Pour tonifier un point, nous appuyons sur celui-ci et nous tournons dans le sens des aiguilles d'une montre en donnant une impulsion dans le sens du courant énergétique.";
+"Description4" = "Pour disperser un point, nous appuyons sur celui-ci et nous tournons dans le sens contraire des aiguilles d'une montre en donnant une impulsion dans le sens contraire du courant énergétique.";
+"Description5" = "La pression est graduelle, ferme, constante, pénétrante. Jamais trop forte. Respirez tranquillement et parfois profondément pendant les moments d'automassage.";
+"Description6" = "Frottez le point d'acupression dans un mouvement soit circulaire, soit de va-et-vient pendant environ 30 secondes à 3 minutes, puis relâchez. La vitesse de ponçage peut varier de lente à rapide.\nRester 30 secondes à 3 minutes sur un point est un véritable exercice qui se révèle bénéfique à condition d'être patient : c'est la condition pour réussir. Certains points sont souvent sensibles au début du travail, mais cela s'atténuera après quelques minutes. Les points sont symétriques sur le corps.";
+"Description7" = "";
+
+
+
+"How to find it?" = "Comment le  trouver ?";
+"Advice" = "Le conseil de l’expert :";
+
+
+
+//navigation
+"Start navigation" = "Démarrer la navigation";
+"Press and hold to pause" = "Restez appuyé pour mettre en pause";
+
+"Speed" = "vitesse";
+"Time" = "temps";
+"Distance" = "Distance";
+"startNavigationToRoute" = "Nous allons maintenant vous guider à pied vers le point le plus proche du Smart Run.";
+"endRoute" =  "Félicitations, vous avez fini votre Smart Run ! N'hésitez pas à nous donner votre avis.";
+
+
+
+
+"How was your experience ?" = "Comment s'est passé le parcours ?";
+"Finish" = "Fin";
+"Statistics" = "Les statistiques";
+"Discover all the products" = "Découvrir tous les produits";
+
+
+"Are you sure you want to stop?" = "Voulez-vous vraiment terminer?";
+"Continue" = "Reprendre" ;
+"Stop" = "Terminer";

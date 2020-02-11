@@ -1,0 +1,132 @@
+/* 
+  Localizable.strings
+  MyThalassa
+
+  Created by hassine othmane on 11/4/19.
+  Copyright © 2019 mile. All rights reserved.
+*/
+
+
+/// Home
+"Welcome"="Welcome";
+"Destinations"="Destinations";
+"Experiences"="Experiences";
+"Discover"="Discover !";
+"You are close to" = "You are close to";
+
+
+/// Destinations
+"Our Destinations"="Our Destinations";
+
+/// Destinations - Details
+"More"="More";
+"Less"="Less";
+"Our hotel"="Our hotel";
+"Our hotels"="Our hotels";
+"Our routes"="Our routes";
+"View on map"="View on map";
+
+/// Hostel - Details
+"Our good deals" = "Our good deals";
+
+/// goodDeal - Detail
+"Booking" = "Booking";
+"Visit website" = "Visit website";
+"Call" = "Call";
+
+/// experiences
+"Our experiences" = "Our experiences";
+"Beauty" = "Beauty";
+"Rest" = "Rest";
+"Care" = "Care";
+
+/// Route - detail
+"Preview" = "Preview";
+"Start route" = "Start route";
+
+"Good" = "Good";
+"Bad" = "Bad";
+"Medium" = "Medium";
+
+"NoRoute" = "Be patient, we are working on new routes just for you!";
+/// Beauty Details
+"Tutorials" = "Tutorials";
+
+//Respirology
+"Breathing" =  "Breathing";
+
+
+//Respirology details
+"Did you know ?" = "Did you know ?";
+"Benefits" = "Benefits";
+"Breathing details" = "We breathe around 15 to 20000 times per day! And you can learn to breathe well in every situation!";
+
+"Benefits Breathing details" = "Deeper and fuller breathing gradually supplies your body with more oxygen for the muscles, tissues, and organs as well as having a positive effect on your energy levels. Practicing controlled breathing balances you psychologically and calms you: èHolding your breath in your lungs and breathing out quickly encourages better delivery of oxygen to your body and stimulates the sympathetic nervous system. The benefits are a stimulating effect. èPausing with your lungs empty and lengthening the process of breathing out stimulates the parasympathetic nervous system. The benefit this time is more relaxing.";
+"Access" = "Access";
+
+
+//Respirology - settings
+"Beginner : 4s inhalation - 4s Exhalation" =  "Beginner : 4s inhalation - 4s Exhalation";
+"Advanced : 4s inhalation - 6s Exhalation" =  "Advanced : 4s inhalation - 6s Exhalation";
+"Expert   : 6s inhalation - 8s Exhalation - 2s Rest"  =  "Expert   : 6s inhalation - 8s Exhalation - 2s Rest";
+
+
+"Inhalation_secondes" = "Inhale for %@ seconds";
+"Exhalation_secondes" = "Exhale for %@ seconds";
+"Rest_secondes" = "Stop breathing for %@ seconds";
+
+
+
+"Start" = "Start";
+"StopAnimation" = "Stop";
+"Choose your difficulty" = "Choose your difficulty";
+"Choose your duration (in mns)" = "Choose your duration (in mns)";
+
+
+// Cares - settings
+
+"Do In" = "Do In";
+
+"Energy principles :" = "Energy principles :";
+"Invigoration :" = "Invigoration :";
+"Scattering :" = "Scattering :";
+"Apply pressure :" = "Apply pressure :";
+"Massage techniques :" = "Massage techniques :";
+
+"Description1" = "Stimulating an energy point can allow you to reopen hidden energy stores and boost circulation around the body.";
+"Description2" = "Before beginning a massage, warm your hands up by rubbing them together for 15 seconds or so while breathing. Clearing and calming the mind.";
+"Description3" = "To invigorate a point, press on it and twist clockwise pushing in the rhythm of the current of energy.";
+"Description4" = "To break up a point, press on it and twist anticlockwise pushing out of sync with the current of energy.";
+"Description5" = "The pressure should be gradual, firm, consistent, and penetrating. Never too hard. Breath calmly and sometimes deeply as you massage yourself.";
+"Description6" = "Rub the acupressure point in a circular movement or back and forth for between 30 seconds and 3 minutes, then relax. The speed of the sanding motion can vary from slow to fast.\nYou must be patient, as staying 30 seconds to 3 minutes on a point is tough and only worth it if you are patient. Some points are often sensitive at first, but that will ease after a few minutes. The points are symmetrical on the body.";
+"Description7" = "";
+
+"How to find it?" = "How to find it?";
+"Advice" = "Advice";
+
+
+
+//navigation
+
+"Start navigation" = "Start navigation";
+"Press and hold to pause" = "Press and hold to pause";
+"Speed" = "Speed";
+"Time" = "Time";
+"Distance" = "Distance";
+
+"startNavigationToRoute" = "We will now guide you to the Smart Run.";
+"endRoute" = "Congratulations, you have reached the end of this Smart Run! Please feel free to give us a feedback.";
+
+
+
+//Statiscs
+
+"How was your experience ?" = "How was your experience ?";
+"Statistics" = "Statistics";
+"Discover all the products" = "Discover all the products";
+
+
+
+"Are you sure you want to stop?" = "Are you sure you want to stop?";
+"Continue" = "Continue";
+

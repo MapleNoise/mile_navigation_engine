@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Saint-Étienne Balades</string>
+    <string name="app_name"></string>
     
     <string name="lorem_short" translatable="false">Lorem</string>
     <string name="lorem_medium" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>

@@ -88,14 +88,7 @@ class MileNavigationEngine {
 
 typedef void OnNavigationFinished();
 
-class MileNavigationDatas {
-  final String route;
-  final String gpsColor;
-  MileNavigationDatas({@required this.route, @required this.gpsColor, });
-}
-
 class NavigationView extends StatefulWidget {
-  //final MileNavigationDatas datas;
   final String route;
   final String gpsColor;
   final String accessToken;
