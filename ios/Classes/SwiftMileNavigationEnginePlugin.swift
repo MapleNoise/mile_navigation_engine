@@ -75,8 +75,12 @@ public class SwiftMileNavigationEnginePlugin: NSObject, FlutterPlugin, FlutterSt
            AppDataHolder.flutterNavigationMode = mode
            controller.modalPresentationStyle = .fullScreen
 
-           let flutterViewController = UIApplication.shared.delegate?.window??.rootViewController as! FlutterViewController
-           flutterViewController.present(controller, animated: true, completion: nil)
+            if UIApplication.shared.delegate?.window??.rootViewController is UINavigationController {
+                UIApplication.shared.delegate?.window??.rootViewController!.present(controller, animated: true, completion: nil)
+            } else {
+                let flutterViewController = UIApplication.shared.delegate?.window??.rootViewController as! FlutterViewController
+                flutterViewController.present(controller, animated: true, completion: nil)
+            }
         }
 
       func endNavigation(result: FlutterResult?)
