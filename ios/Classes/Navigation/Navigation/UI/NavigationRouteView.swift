@@ -47,10 +47,6 @@ class NavigationRouteView: UIViewController,FloatingPanelControllerDelegate {
     @IBOutlet weak var finish_btn: UIButton!
   //  @IBOutlet weak var poiBannerContainer_view: UIView!
     
-    
-    
-    
-    
     private let ui = NavigationViewUI()
     private var presenter: NavigationPresenterProtocol!
     var object : NavigationEntity?
@@ -89,7 +85,8 @@ class NavigationRouteView: UIViewController,FloatingPanelControllerDelegate {
     var checkNearsetPoint = true
     var isProgressing = true
     var isPaused = false
-    
+    var flutterNavigationMode = ""
+
     var timestamp : Int64?
     var bannerViewAnimated = false
     // Restez appuyé pour mettre en pause
@@ -99,7 +96,7 @@ class NavigationRouteView: UIViewController,FloatingPanelControllerDelegate {
         presenter = NavigationPresenter(view: self)
        
         DispatchQueue.main.async {
-            self.initLocationManager()
+             self.initLocationManager()
             self.initUI()
             self.initInstructionBannerView()
             self.initMap()
@@ -120,7 +117,7 @@ class NavigationRouteView: UIViewController,FloatingPanelControllerDelegate {
                 self.fpc = FloatingPanelController()
                 self.fpc.delegate = self // Optional
                 self.fpc.surfaceView.cornerRadius = 30.0
-                self.contentVC = StatisticsRouter.createViewController(parentViewController: self) as!  StatisticsView
+                self.contentVC = StatisticsRouter.createViewController(parentViewController: self) as?  StatisticsView
                 self.contentVC!.set(object: StatisticsEntity(distance: self.distanceValue_lbl.text, speed: self.speedValue_lbl.text, time: self.timeValue_lbl.text))
                 self.fpc.set(contentViewController: self.contentVC)
                 self.fpc.addPanel(toParent: self)
@@ -221,7 +218,7 @@ class NavigationRouteView: UIViewController,FloatingPanelControllerDelegate {
                 self.fpc = FloatingPanelController()
                 self.fpc.delegate = self // Optional
                 self.fpc.surfaceView.cornerRadius = 30.0
-                self.contentVC = StatisticsRouter.createViewController(parentViewController: self) as!  StatisticsView
+                self.contentVC = StatisticsRouter.createViewController(parentViewController: self) as?  StatisticsView
                 self.contentVC!.set(object: StatisticsEntity(distance: self.distanceValue_lbl.text, speed: self.speedValue_lbl.text, time: self.timeValue_lbl.text))
                 self.fpc.set(contentViewController: self.contentVC)
                 self.fpc.addPanel(toParent: self)
@@ -232,13 +229,12 @@ class NavigationRouteView: UIViewController,FloatingPanelControllerDelegate {
     @IBAction func pause_action(_ sender: Any) {
         
         self.back_btn.isHidden = true
-                       self.back_btn.isEnabled = false
+        self.back_btn.isEnabled = false
         switch navigationStatus {
         case .none:
             print("noe")
             playSynthesizer(description: "startNavigationToRoute".localized)
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+3) {
-               
                 self.initTheNavigationtoTheRoute()
             }
             

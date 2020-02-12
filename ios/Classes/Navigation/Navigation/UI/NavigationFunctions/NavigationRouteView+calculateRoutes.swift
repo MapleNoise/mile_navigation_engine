@@ -19,8 +19,14 @@ extension NavigationRouteView
         if let location = self.map.userLocation , let waypoint = self.waypoints.first
         {
             navigationStatus = .calculating
-            
-            let option = NavigationRouteOptions(waypoints: [Waypoint.init(coordinate: location.coordinate),waypoint], profileIdentifier: .walking)
+
+            var wPoint: [Waypoint] = []
+            if(AppDataHolder.flutterNavigationMode == NavigationMode.NAVIGATE_IN_ROUTE){
+                wPoint = [Waypoint.init(coordinate: location.coordinate),waypoint]
+            } else if(AppDataHolder.flutterNavigationMode == NavigationMode.NAVIGATE_TO_POI){
+                wPoint = [Waypoint.init(coordinate: location.coordinate), Waypoint.init(coordinate: (self.object?.pois[0].coordinatesGPX[0])!) ]
+            }
+            let option = NavigationRouteOptions(waypoints: wPoint, profileIdentifier: .walking)
             option.locale = Locale.init(identifier: Utils.getLanguageAndCountry())
             option.distanceMeasurementSystem = Utils.getDistanceMeasurementSystem()
             option.waypoints = option.waypoints.map {
@@ -47,14 +53,10 @@ extension NavigationRouteView
     func calculateRoute(_ callback : @escaping ([Route]?,_ waypoints: [Waypoint]?) -> Void ) -> Void {
         
         
-        var profileIdentifier = MBDirectionsProfileIdentifier.walking
-        var a = [Waypoint]()
-        for i in 0...waypoints.count-1
-        {
-            a.append(waypoints[i])
-        }
+        let profileIdentifier = MBDirectionsProfileIdentifier.walking
+
         
-        let matchOptions = NavigationMatchOptions(waypoints: a, profileIdentifier: profileIdentifier)
+        let matchOptions = NavigationMatchOptions(waypoints: waypoints, profileIdentifier: profileIdentifier)
         matchOptions.includesSteps = true
         //matchOptions.waypointIndices = IndexSet([0, 1, waypoints.count - 1])
         matchOptions.waypoints.forEach { (waypoint) in

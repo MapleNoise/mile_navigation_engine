@@ -91,64 +91,52 @@ extension NavigationRouteView :NavigationServiceDelegate, AVAudioPlayerDelegate
     func navigationService(_ service: NavigationService, didArriveAt waypoint: Waypoint) -> Bool {
         // end of the route
         
-            if (waypoint == self.lastWaypoint)
-                  {
-                      if self.indexRoute == 1
-                      {
-                         DispatchQueue.main.async {
-                        self.timer.invalidate()
-                        
-                          self.deinitNavigation()
-                                self.playSynthesizer(description: "endRoute".localized)
-                                self.fpc = FloatingPanelController()
-                                self.fpc.delegate = self // Optional
-                                self.fpc.surfaceView.cornerRadius = 30.0
-                                self.contentVC = StatisticsRouter.createViewController(parentViewController: self) as!  StatisticsView
-                                self.contentVC!.set(object: StatisticsEntity(distance: self.distanceValue_lbl.text, speed: self.speedValue_lbl.text, time: self.timeValue_lbl.text))
-                                self.fpc.set(contentViewController: self.contentVC)
-                                self.fpc.addPanel(toParent: self)
-                            self.locationManager.stopUpdatingLocation()
-                          
-                        }
-                          
+        if (waypoint == self.lastWaypoint) {
+              if self.indexRoute == 1 {
+                 DispatchQueue.main.async {
+                    self.timer.invalidate()
+
+                    self.deinitNavigation()
+                    self.playSynthesizer(description: "endRoute".localized)
+                    self.fpc = FloatingPanelController()
+                    self.fpc.delegate = self // Optional
+                    self.fpc.surfaceView.cornerRadius = 30.0
+                    self.contentVC = StatisticsRouter.createViewController(parentViewController: self) as?  StatisticsView
+                    self.contentVC!.set(object: StatisticsEntity(distance: self.distanceValue_lbl.text, speed: self.speedValue_lbl.text, time: self.timeValue_lbl.text))
+                    self.fpc.set(contentViewController: self.contentVC)
+                    self.fpc.addPanel(toParent: self)
+                    self.locationManager.stopUpdatingLocation()
+                }
+              }
+          } else {
+                self.isProgressing = false
+
+                // end of the way route
+                if self.indexRoute == 0 {
+                  self.suspendNotifications()
+                  self.indexRoute += 1
+                  self.routes.removeFirst()
+
+                  DispatchQueue.main.async {
+                       self.map.removeRoutes()
+                  }
+
+                  if self.object?.route.isNavigationActivated == true || AppDataHolder.flutterNavigationMode == NavigationMode.NAVIGATE_TO_POI {
+                     self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.timerDuringSmartRun), userInfo: nil, repeats: true)
+                     self.timestamp = Int64(Date().timeIntervalSince1970)
+                     DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+2) {
+                        self.iniSimulatedNavigation()
+                        self.showRoutes()
+                     }
+
+                      DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+5) {
+                        self.isProgressing = true
                       }
+                  } else {
+                      self.iniSimulatedNavigation()
                   }
-                  else
-                  {
-                    self.isProgressing = false
-                      // end of the way route
-                      if self.indexRoute == 0
-                      {
-                        self.suspendNotifications()
-                        self.indexRoute += 1
-                          self.routes.removeFirst()
-                        DispatchQueue.main.async {
-                             self.map.removeRoutes()
-                        }
-                         
-                       
-                          
-                              if self.object?.route.isNavigationActivated == true
-                              {
-                                self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.timerDuringSmartRun), userInfo: nil, repeats: true)
-                                                       self.timestamp = Int64(Date().timeIntervalSince1970)
-                                 DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+2) {
-                                    self.iniSimulatedNavigation()
-                                    self.showRoutes()
-                                }
-                                  
-                                  DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+5) {
-                                  self.isProgressing = true
-                                  }
-                              }
-                              else
-                              {
-                                    
-                                  self.iniSimulatedNavigation()
-                                
-                              }
-                          }
-                  }
+              }
+          }
          return true
     }
     

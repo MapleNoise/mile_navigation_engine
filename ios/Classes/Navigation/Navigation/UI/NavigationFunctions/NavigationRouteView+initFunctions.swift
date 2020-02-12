@@ -69,36 +69,28 @@ extension NavigationRouteView
                 }
                 self.topContainer_view.addSubview(UIButton.init(frame: CGRect.init(x: 0, y: 0, width: 200, height: 200)))
                 self.containerInformations_view.layer.runAnimation(
-                    
                     Animo.fade(from: 0, by: 1, to: 1, duration: 1, timingMode: TimingMode.easeInOut, options: Options.init())
-                    
                 )
-                if let isNavigationActivated = self.object?.route.isNavigationActivated
-                    
-                { if isNavigationActivated == true
-                {
-                    self.calculateRoute { (routes, waypoints) in
-                        if routes == nil && waypoints == nil
-                        {
+                if let isNavigationActivated = self.object?.route.isNavigationActivated {
+                    if isNavigationActivated == true  && AppDataHolder.flutterNavigationMode == NavigationMode.NAVIGATE_IN_ROUTE {
+                        self.calculateRoute { (routes, waypoints) in
+                            if routes == nil && waypoints == nil {
+                                self.drawRoutePolyline()
+                                self.iniSimulatedNavigation()
+                            } else {
+                                self.lastWaypoint = waypoints!.last
+                                self.firstWaypoint = waypoints!.first
+                                self.routes.append(routes!.first!)
+                                self.iniSimulatedNavigation()
+                            }
+                        }
+                    } else {
+                        if AppDataHolder.flutterNavigationMode == NavigationMode.NAVIGATE_IN_ROUTE {
                             self.drawRoutePolyline()
-                            self.iniSimulatedNavigation()
                         }
-                        else
-                        {
-                            self.lastWaypoint = waypoints!.last
-                            self.firstWaypoint = waypoints!.first
-                            self.routes.append(routes!.first!)
-                            self.iniSimulatedNavigation()
-                        }
+                        self.showRoutes()
+                        self.iniSimulatedNavigation()
                     }
-                }
-                else
-                {
-                    self.drawRoutePolyline()
-                    self.showRoutes()
-                    self.iniSimulatedNavigation()
-                    }
-                    
                 }
             }
         }
@@ -114,9 +106,8 @@ extension NavigationRouteView
             
             /*if (AppDelegate.testMode == false )
             {*/
-                
                 navigationService = MapboxNavigationService(route: self.routes[0])
-                
+            
             /*}
             else
             {

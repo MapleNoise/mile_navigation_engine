@@ -12,7 +12,7 @@ import UIKit
 class StatisticsRouter: StatisticsRouterProtocol {
       
     static var mainStoryboard: UIStoryboard {
-            return UIStoryboard(name: "Statistics", bundle: Bundle.main)
+         return UIStoryboard.init(name: "Statistics", bundle: Bundle.init(for: StatisticsView.self))
     }
     
     static func createViewController( parentViewController viewController: UIViewController) -> UIViewController {

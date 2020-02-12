@@ -4,9 +4,8 @@ import MapboxDirections
 import MapboxCoreNavigation
 import MapboxNavigation
 
-public class SwiftMileNavigationEnginePlugin: NSObject, FlutterPlugin {
+public class SwiftMileNavigationEnginePlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
   var _navigationViewController: NavigationViewController? = nil
-      var _eventSink: FlutterEventSink? = nil
 
       var _distanceRemaining: Double?
       var _durationRemaining: Double?
@@ -69,10 +68,11 @@ public class SwiftMileNavigationEnginePlugin: NSObject, FlutterPlugin {
                }
                route.pois = pois
            }
-
+            
            let controller = NavigationRouter.mainStoryboard.instantiateViewController(withIdentifier: "NavigationRouteView") as! NavigationRouteView
            let object = NavigationEntity.init(route: route, pois: pois, directionals: [PointOfInterest](), checkNearsetPoint: false)
            controller.set(object: object)
+           AppDataHolder.flutterNavigationMode = mode
            controller.modalPresentationStyle = .fullScreen
 
            let flutterViewController = UIApplication.shared.delegate?.window??.rootViewController as! FlutterViewController
@@ -110,10 +110,9 @@ public class SwiftMileNavigationEnginePlugin: NSObject, FlutterPlugin {
             _distanceRemaining = progress.distanceRemaining
             _durationRemaining = progress.durationRemaining
             //_currentLegDescription =  progress.currentLeg.description
-            if(_eventSink != nil)
-            {
+            if(AppDataHolder.eventSink != nil) {
                 let arrived = progress.isFinalLeg && progress.currentLegProgress.userHasArrivedAtWaypoint
-                _eventSink!(arrived)
+                AppDataHolder.eventSink!(arrived)
 
             }
         }
@@ -123,12 +122,12 @@ public class SwiftMileNavigationEnginePlugin: NSObject, FlutterPlugin {
       }
 
       public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
-          _eventSink = events
+          AppDataHolder.eventSink = events
           return nil
       }
 
       public func onCancel(withArguments arguments: Any?) -> FlutterError? {
-          _eventSink = nil
+          AppDataHolder.eventSink = nil
           return nil
       }
   }

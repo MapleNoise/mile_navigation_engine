@@ -18,14 +18,10 @@ class NavigationRouter: NavigationRouterProtocol {
               viewController.show(controller, sender: nil)
     }
     
-    
-    
-
-    
 
     static var mainStoryboard: UIStoryboard {
-        return UIStoryboard(name: "Navigation", bundle: Bundle.main)
+        
+        return UIStoryboard.init(name: "Navigation", bundle: Bundle.init(for: NavigationRouteView.self))
     }
 
- 
 }

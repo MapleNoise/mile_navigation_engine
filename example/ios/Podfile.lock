@@ -18,7 +18,7 @@ PODS:
     - Solar (~> 2.1)
   - MapboxNavigationNative (6.2.1)
   - MapboxSpeech (0.1.1)
-  - mile_navigation_engine (0.0.3):
+  - mile_navigation_engine (0.0.4):
     - Animo
     - FloatingPanel
     - Flutter
@@ -63,7 +63,7 @@ SPEC CHECKSUMS:
   MapboxNavigation: 244610a48b25b757891f38d3f9fe48cbedfa76b9
   MapboxNavigationNative: 11dc22140f4698d3f26989f2b6379dc81ef0d4c1
   MapboxSpeech: 59b3984d3f433a443d24acf53097f918c5cc70f9
-  mile_navigation_engine: b1890030b34cdefb2e662167c82b88de6e774308
+  mile_navigation_engine: 890c2c6be12ab40e370a82736267d747f1be093a
   Polyline: 0e9890790292741c8186201a536b6bb6a78d02dd
   Solar: 2dc6e7cc39186cb0c8228fa08df76fb50c7d8f24
   Turf: c6bdf62d6a70c647874f295dd1cf4eefc0c3e9e6

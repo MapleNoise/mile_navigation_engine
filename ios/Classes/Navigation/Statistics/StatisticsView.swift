@@ -66,6 +66,8 @@ class StatisticsView: UIViewController {
         
     }
     @IBAction func finish_action(_ sender: Any) {
+        AppDataHolder.eventSink!(true)
+        dismiss(animated: true, completion: nil)
       //    self.backToSpeceficViewController(viewController: HomeView.self)
     }
     
