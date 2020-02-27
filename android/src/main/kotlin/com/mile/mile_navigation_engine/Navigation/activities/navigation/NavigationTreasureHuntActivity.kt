@@ -1,14 +1,13 @@
 package com.mile.mile_navigation_engine.activities.navigation
 
+import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.content.res.Resources
 import android.graphics.Color
-import android.graphics.ColorFilter
 import android.graphics.PorterDuff
 import android.graphics.RectF
 import android.graphics.drawable.LayerDrawable
@@ -18,25 +17,28 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.transition.TransitionManager
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.single.PermissionListener
 import com.mapbox.android.core.location.*
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.android.gestures.MoveGestureDetector
 import com.mapbox.api.directions.v5.DirectionsCriteria
 import com.mapbox.api.directions.v5.models.DirectionsResponse
 import com.mapbox.api.directions.v5.models.DirectionsRoute
-import com.mapbox.api.matching.v5.MapboxMapMatching
-import com.mapbox.api.matching.v5.models.MapMatchingResponse
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.LineString
@@ -65,7 +67,6 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.services.android.navigation.ui.v5.camera.DynamicCamera
 import com.mapbox.services.android.navigation.ui.v5.camera.NavigationCamera
 import com.mapbox.services.android.navigation.ui.v5.camera.NavigationCameraUpdate
-import com.mapbox.services.android.navigation.ui.v5.instruction.InstructionView
 import com.mapbox.services.android.navigation.ui.v5.listeners.NavigationListener
 import com.mapbox.services.android.navigation.ui.v5.map.NavigationMapboxMap
 import com.mapbox.services.android.navigation.ui.v5.voice.NavigationSpeechPlayer
@@ -77,18 +78,19 @@ import com.mapbox.services.android.navigation.v5.milestone.Milestone
 import com.mapbox.services.android.navigation.v5.milestone.MilestoneEventListener
 import com.mapbox.services.android.navigation.v5.milestone.VoiceInstructionMilestone
 import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigation
-import com.mapbox.services.android.navigation.v5.navigation.NavigationConstants
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute
 import com.mapbox.services.android.navigation.v5.offroute.OffRouteListener
 import com.mapbox.services.android.navigation.v5.routeprogress.ProgressChangeListener
 import com.mapbox.services.android.navigation.v5.routeprogress.RouteProgress
-import com.mapbox.services.android.navigation.v5.utils.DistanceFormatter
 import com.mapbox.services.android.navigation.v5.utils.RouteUtils
 import com.mapbox.turf.TurfMeasurement
 import com.mapbox.turf.TurfTransformation
 import com.mile.mile_navigation_engine.Navigation.AppConfiguration
 import com.mile.mile_navigation_engine.Navigation.ApplicationRunner
 import com.mile.mile_navigation_engine.BuildConfig
+import com.mile.mile_navigation_engine.Navigation.AppPropertiesConfiguration
+import com.mile.mile_navigation_engine.Navigation.interfaces.OnFragmentInteraction
+import com.mile.mile_navigation_engine.Navigation.model.Riddle
 import com.mile.mile_navigation_engine.Navigation.service.AudioService
 import com.mile.mile_navigation_engine.Navigation.utils.IntentUtils
 import com.mile.mile_navigation_engine.R
@@ -97,7 +99,39 @@ import com.mile.mile_navigation_engine.model.POI
 import com.mile.mile_navigation_engine.model.RunSession
 import com.mile.mile_navigation_engine.utils.*
 import com.mile.mile_navigation_engine.utils.AppDataHolder.Companion.currentRoute
+import com.mile.miramas.fragments.*
 import kotlinx.android.synthetic.main.activity_component_navigation.*
+import kotlinx.android.synthetic.main.activity_component_navigation.bottom_sheet_poi_layout
+import kotlinx.android.synthetic.main.activity_component_navigation.bottom_sheet_rate
+import kotlinx.android.synthetic.main.activity_component_navigation.close_navigation
+import kotlinx.android.synthetic.main.activity_component_navigation.coordinator_banner_poi
+import kotlinx.android.synthetic.main.activity_component_navigation.description_poi_textview
+import kotlinx.android.synthetic.main.activity_component_navigation.distance_container
+import kotlinx.android.synthetic.main.activity_component_navigation.distance_left_textview
+import kotlinx.android.synthetic.main.activity_component_navigation.finish_button
+import kotlinx.android.synthetic.main.activity_component_navigation.gps_loader_holder
+import kotlinx.android.synthetic.main.activity_component_navigation.image_poi_imageview
+import kotlinx.android.synthetic.main.activity_component_navigation.menu_layout
+import kotlinx.android.synthetic.main.activity_component_navigation.mp3_fillprogresslayout
+import kotlinx.android.synthetic.main.activity_component_navigation.mp3_fillprogresslayout_static
+import kotlinx.android.synthetic.main.activity_component_navigation.mp3_time_textview
+import kotlinx.android.synthetic.main.activity_component_navigation.navigation_state_button
+import kotlinx.android.synthetic.main.activity_component_navigation.play_poi_button
+import kotlinx.android.synthetic.main.activity_component_navigation.poi_player
+import kotlinx.android.synthetic.main.activity_component_navigation.progress_bar_loader
+import kotlinx.android.synthetic.main.activity_component_navigation.rating
+import kotlinx.android.synthetic.main.activity_component_navigation.recenter_button
+import kotlinx.android.synthetic.main.activity_component_navigation.resume_button
+import kotlinx.android.synthetic.main.activity_component_navigation.speed_textview
+import kotlinx.android.synthetic.main.activity_component_navigation.start_navigation_holder
+import kotlinx.android.synthetic.main.activity_component_navigation.stats_layout
+import kotlinx.android.synthetic.main.activity_component_navigation.stop_poi_button
+import kotlinx.android.synthetic.main.activity_component_navigation.text_loader
+import kotlinx.android.synthetic.main.activity_component_navigation.timer_textview
+import kotlinx.android.synthetic.main.activity_component_navigation.title_poi_textview
+import kotlinx.android.synthetic.main.activity_component_navigation.toolbar
+import kotlinx.android.synthetic.main.activity_component_navigation.total_time_textview
+import kotlinx.android.synthetic.main.activity_navigation_treasure_hunt.*
 import okhttp3.Cache
 import retrofit2.Call
 import retrofit2.Callback
@@ -108,25 +142,25 @@ import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.collections.ArrayList
 
-class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
-        MapboxMap.OnMapLongClickListener, ProgressChangeListener, MilestoneEventListener,
-        OffRouteListener, NavigationListener, MapboxMap.OnMapClickListener, MP3Listener {
+class NavigationTreasureHuntActivity : AppCompatActivity(), OnMapReadyCallback,
+    MapboxMap.OnMapLongClickListener, ProgressChangeListener, MilestoneEventListener,
+    OffRouteListener, NavigationListener, MapboxMap.OnMapClickListener, MP3Listener {
 
     companion object {
 
         private val FIRST = 0
         private val ONE_HUNDRED_MILLISECONDS = 100
         private val BOTTOMSHEET_PADDING_MULTIPLIER = 4
-        public val TWO_SECONDS_IN_MILLISECONDS = 2000
+        val TWO_SECONDS_IN_MILLISECONDS = 2000
         private val BEARING_TOLERANCE = 90.0
         private val SEARCHING_FOR_GPS_MESSAGE = "Searching for GPS..."
         private val GPS_FOUND_MESSAGE = "GPS found, have a nice run!"
         private val COMPONENT_NAVIGATION_INSTRUCTION_CACHE =
-                "component-navigation-instruction-cache"
+            "component-navigation-instruction-cache"
         private val TEN_MEGABYTE_CACHE_SIZE = (10 * 1024 * 1024).toLong()
         private val ZERO_PADDING = 0
-        public val DEFAULT_ZOOM = 12.0
-        public val DEFAULT_TILT = 0.0
+        val DEFAULT_ZOOM = 12.0
+        val DEFAULT_TILT = 0.0
         private val DEFAULT_BEARING = 0.0
         private val UPDATE_INTERVAL_IN_MILLISECONDS: Long = 1000
         private val FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS: Long = 500
@@ -139,14 +173,13 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
         private val INTERVAL_BETWEEN_SAVES = 5000
 
         fun navigateFrom(context : Context){
-            context.startActivity(Intent(context, NavigateToPOIActivity::class.java))
+            context.startActivity(Intent(context, NavigationTreasureHuntActivity::class.java))
         }
     }
 
     lateinit var navigationLayout: CoordinatorLayout
     lateinit var mapView: MapView
     lateinit var mapboxMap : MapboxMap
-    lateinit var instructionView: InstructionView
 
     private val callback = ComponentActivityLocationCallback(this)
     private var locationEngine: LocationEngine? = null
@@ -165,9 +198,11 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
     private lateinit var displayedAnnotations : List<Symbol>
     private var displayedFeatures = ArrayList<Feature>()
     private var hasRunStarted = false
+    private var hasTreasureHuntStarted = false
     private var hasRouteFinished = false
     private var hasLeadStarted = false
     private var hasLeadBeenRequested = false
+    private var hasLeadBeenStarted = false
     private var isUserTooFarFromRoute = false
     private var isMapboxSpeakerMuted = false
     private var currentBlockerPOI : POI? = null
@@ -204,6 +239,21 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
     private var lastTimeUserHasBeenOffRoute = 0L
     private var previousSaveTimeStamp = 0L
 
+    private var arrayRiddles = ArrayList<Riddle>()
+    private var arrayPoiRiddles = ArrayList<POI>()
+    private var arrayPoiRiddlesDiscovered = ArrayList<POI>()
+    private var arrayPoiRiddlesValidated = ArrayList<POI>()
+    private lateinit var nextPoiRiddleToDiscover : POI
+    private lateinit var currentPoiRiddle : POI
+
+    private var isFragmentDisplayed = false
+    private var userIsLookingForQRCode = false
+    private var userIsLookingForNextStepArea = false
+
+    private var numberRightAnswerRiddles = 0
+
+    private lateinit var currentDisplayedFragment: Fragment
+
     private enum class MapState {
         INFO,
         NAVIGATION
@@ -228,7 +278,7 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
         // For styling the InstructionView
         setTheme(R.style.CustomInstructionView)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_component_navigation)
+        setContentView(R.layout.activity_navigation_treasure_hunt)
 
         Mapbox.getInstance(this, getString(R.string.access_token))
 
@@ -236,10 +286,6 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
 
         mapView = findViewById(R.id.mapView)
         navigationLayout = findViewById(R.id.componentNavigationLayout)
-        instructionView = findViewById(R.id.instructionView)
-        instructionView.findViewById<TextView>(R.id.stepPrimaryText).textSize = 23f
-        instructionView.findViewById<TextView>(R.id.stepPrimaryText).maxLines = 3
-
 
         mapView.onCreate(savedInstanceState)
         //startNavigationFab.show()
@@ -252,6 +298,7 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
         initToolbar()
         initView()
         initListeners()
+        initTreasureChest()
 
         showNavigationHolderLayout(false)
         //manageVisibilityMenuLayout(false)
@@ -271,20 +318,37 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
 
         navigation_state_button.setOnClickListener {
             if(navigationState == NavigationState.WAITING_TO_START){
-                hasUserRequestedNavigation = true
-                manageNavigationState()
-                showLoadingGPS(true, getString(R.string.message_generating_route))
-                //StatisticManager.routeStarted(currentRoute!!)
-                //if(checkIfUserIsTooFarFromRoute(lastLocation)){
-                    leadUserToRunRoute()
-                //}else{
-                 //   startRunNavigation(MapUtils.computeRouteCoordinatesBasedOnClosestPoint(lastLocation!!, currentRoute!!.arrayCoordinates!!))
-               // }
+                Dexter.withActivity(this)
+                    .withPermission(Manifest.permission.CAMERA)
+                    .withListener(object: PermissionListener {
+                        override fun onPermissionGranted(response: PermissionGrantedResponse?) {
+                            hasUserRequestedNavigation = true
+                            manageNavigationState()
+                            showLoadingGPS(true, getString(R.string.message_generating_route))
+                            //StatisticManager.routeStarted(currentRoute!!)
+                            if(checkIfUserIsTooFarFromTreasureHuntDeparture(lastLocation)){
+                                leadUserToRunRoute()
+                            }else{
+                                //startRunNavigation(MapUtils.computeRouteCoordinatesBasedOnClosestPoint(lastLocation!!, currentRoute!!.arrayCoordinates!!))
+                                startTreasureHunt()
+                            }
+                        }
+
+                        override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest?, token: PermissionToken?) {
+                            token?.continuePermissionRequest()
+                        }
+
+                        override fun onPermissionDenied(response: PermissionDeniedResponse?) {
+                            Toast.makeText(this@NavigationTreasureHuntActivity, "You will need your camera to do this interactive treasure hunt!", Toast.LENGTH_LONG).show()
+                        }
+
+                    }).check()
+
             }else if(navigationState == NavigationState.IN_PROGRESS){
                 manageNavigationState()
                 navigationState = NavigationState.PAUSED
                 //moveCameraOverhead()
-                navigationMap!!.showRouteOverview(intArrayOf(150,150,150,150))
+                if(!hasTreasureHuntStarted) navigationMap!!.showRouteOverview(intArrayOf(150,150,150,150))
             }
         }
 
@@ -310,15 +374,23 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
             navigationMap!!.resetCameraPositionWith(NavigationCamera.NAVIGATION_TRACKING_MODE_GPS)
         }
 
-        close_navigation.setOnClickListener {
-            //if(hasUserChangedRating)
-            //RouteRepository().saveRouteReview(currentRoute?.id!!, rating.rating.toInt())
+        qrcode_button.setOnClickListener {
+            displayQrCodeFragment()
+        }
 
-            //bottomSheetEndBehavior?.isHideable = true
-            //bottomSheetEndBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        close_navigation.setOnClickListener {
             AppDataHolder._eventSink?.success(true)
             finish()
-            //RouteMap.navigateFrom(this@NavigateToPOIActivity)
+        }
+
+        instructions_button.setOnClickListener {
+            displayInstructions()
+        }
+
+        next_step_button.setOnClickListener {
+            bottomSheetPoiBehavior?.isHideable = true
+            bottomSheetPoiBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+            displayInstructionFragment()
         }
     }
 
@@ -342,52 +414,263 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
             }
         }
 
-        poiViewModel.getAllPoisForRouteLiveData(currentRoute!!).observe(this@NavigateToPOIActivity, poiObserver)
+        poiViewModel.getAllPoisForRouteLiveData(currentRoute!!).observe(this@NavigationTreasureHuntActivity, poiObserver)
 
     }*/
+
+    private fun initTreasureChest(){
+
+        arrayPoiRiddles = currentRoute?.arrayPois?.filter { poi ->
+            poi.riddle.arrayQuestions.isNotEmpty()
+        } as ArrayList<POI>
+
+        // Sorting riddles by index
+        arrayPoiRiddles.sortBy {
+           it.riddle.index
+        }
+
+        if(arrayPoiRiddles == null || arrayPoiRiddles.size == 0){
+            //loadPoisRiddles(currentRoute!!)
+        }else{
+            arrayPoiRiddlesDiscovered.add(arrayPoiRiddles.first())
+            currentPoiRiddle = arrayPoiRiddles.first()
+            nextPoiRiddleToDiscover = currentPoiRiddle
+            displayPOIS(loadedStyle)
+        }
+
+    }
 
     /**
      * Used to display the route and user location on first load -> general overview before starting
      */
     private fun initMap(){
-        mapboxMap.uiSettings.setCompassFadeFacingNorth(false)
+        mapboxMap.uiSettings.setCompassFadeFacingNorth(true)
         mapboxMap.uiSettings.isLogoEnabled = false
         mapboxMap.uiSettings.isAttributionEnabled = false
-        var arrayLatLng = MapUtils.convertPointsToLatLng(MapUtils.convertCoordinatesToPoints(currentRoute?.arrayCoordinates!!))
-        if(lastLocation != null)
-            arrayLatLng.add(LatLng(lastLocation?.latitude!!, lastLocation?.longitude!!))
+        var routeLatLng = LatLng(currentRoute?.center?.center!!.latitude, currentRoute?.center?.center!!.longitude)
+        mapboxMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.Builder().target(
+            routeLatLng)
+            .build()))
+    }
 
+    /*private fun loadPoisRiddles(route: RouteDataClass){
+        val poiViewModel = ViewModelProviders.of(this).get(POIViewModel::class.java)
 
-        val latLngBounds = LatLngBounds.Builder()
-                .includes(arrayLatLng)
-                .build()
+        val poiObserver = Observer<PoiQueryResults> { results ->
+            if (results != null) {
+                if (results.data != null) {
 
-        mapboxMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 50))
+                    var sortedListPoisAll = results.data.filter { poi ->
+                        route.pois!!.any {
+                            it == poi.id
+                        }
+                    }
 
+                    var sortedListPoi = results.data.filter { poi ->
+                        route.pois!!.any {
+                            it == poi.id && MapUtils.shouldDisplayPOI(poi.item)
+                        }
+                    }
 
+                    sortedListPoi.forEach {
+                        route.arrayPois.add(it.item)
+                    }
+
+                    /**
+                    // Updating current object
+                    if(!isFinishing()){
+                        var listPois = ArrayList<POI>()
+                        Timber.d("POI : clearing poi of route ${route.name}")
+                        sortedListPoisAll.forEach {
+                            listPois.add(it.item)
+                        }
+                        route.arrayPois = listPois
+                        Timber.d("POI : adding all pois for route ${route.name} , in total : ${route.arrayPois.size} POIs")
+                    }**/
+
+                    initTreasureChest()
+
+                }
+                else if (results.exception != null) {
+                    Timber.e(results.exception)
+                }
+            }
+        }
+
+        try{
+            poiViewModel.getAllPoisForRouteLiveData(route).observe(this@NavigationTreasureHuntActivity, poiObserver)
+        }catch(e: java.lang.Exception){
+            Timber.e(e.localizedMessage)
+        }
+    }*/
+
+    private fun displayQrCodeFragment(){
+        addFragment(R.id.fragment_container, QrCodeFragment.newInstance(object: QrCodeFragment.OnQrCodeDetected{
+            override fun onQrCodeUrlFetched(url: String) {
+                deleteCurrentFragment()
+                displayRiddleFragment(currentPoiRiddle)
+                showButtons(false)
+            }
+
+        }, object: OnFragmentInteraction{
+            override fun close() {
+                deleteCurrentFragment()
+                showButtons(true)
+            }
+
+        }, currentPoiRiddle), QrCodeFragment.FRAGMENT_TAG)
+    }
+
+    private fun displayInstructionFragment(){
+        addFragment(R.id.fragment_container, NextInstructionFragment.newInstance(object: OnFragmentInteraction{
+            override fun close() {
+                deleteCurrentFragment()
+                showButtons(true)
+            }
+
+        }, currentPoiRiddle), QrCodeFragment.FRAGMENT_TAG)
+    }
+
+    private fun displayRiddleFragment(poi: POI){
+        try{
+            replaceFragment(R.id.fragment_container, RiddleFragment.newInstance(poi, object: OnFragmentInteraction{
+                override fun close() {
+                    deleteCurrentFragment()
+                    validRiddle(poi)
+                    showButtons(false)
+                }
+
+            }, object: RiddleFragment.AnswerListener{
+                override fun answered(right: Boolean) {
+                    if(right) {
+                        numberRightAnswerRiddles++
+                        AudioService.getInstance().playMP3(R.raw.treasure_hunt_good_answer)
+                    }else{
+                        AudioService.getInstance().playMP3(R.raw.treasure_hunt_wrong_answer)
+                    }
+                }
+
+            }), RiddleFragment.FRAGMENT_TAG, RiddleFragment.FRAGMENT_TAG)
+        }catch (e: Exception){
+            Timber.e(e.localizedMessage)
+        }
+    }
+
+    private fun displayRiddleDiscoveredFragment(){
+        try{
+            replaceFragment(R.id.fragment_container, RiddleDiscoveredFragment.newInstance(object: OnFragmentInteraction{
+                override fun close() {
+                    deleteCurrentFragment()
+                    showButtons(true)
+                }
+
+            }), RiddleDiscoveredFragment.FRAGMENT_TAG, RiddleDiscoveredFragment.FRAGMENT_TAG)
+        }catch (e: Exception){
+            Timber.e(e.localizedMessage)
+        }
+
+    }
+
+    private fun displayInstructions(){
+        try{
+            replaceFragment(R.id.fragment_container, InstructionsFragment.newInstance(object: OnFragmentInteraction {
+                override fun close() {
+                    deleteCurrentFragment()
+                    showButtons(true)
+                }
+
+            }, arrayPoiRiddlesValidated, currentPoiRiddle.riddle.index), RiddleDiscoveredFragment.FRAGMENT_TAG, RiddleDiscoveredFragment.FRAGMENT_TAG)
+        }catch (e: Exception){
+            Timber.e(e.localizedMessage)
+        }
+
+    }
+
+    private fun displayIntroTreasureHunt(){
+        try{
+            addFragment(R.id.fragment_container, IntroductionTreasureHunt.newInstance(object: OnFragmentInteraction{
+                override fun close() {
+                    deleteCurrentFragment()
+                    showButtons(true)
+                }
+
+            }), QrCodeFragment.FRAGMENT_TAG)
+        }catch (e: Exception){
+            Timber.e(e.localizedMessage)
+        }
+
+    }
+
+    protected fun addFragment(containerViewId : Int, fragment: Fragment, fragmentTag: String) {
+        supportFragmentManager
+                .beginTransaction()
+                .add(containerViewId, fragment, fragmentTag)
+                .disallowAddToBackStack()
+                .commit()
+        currentDisplayedFragment = fragment
+        showButtons(false)
+        isFragmentDisplayed = true
+    }
+
+    protected fun replaceFragment(containerViewId : Int, fragment: Fragment, fragmentTag: String, backStackStateName: String) {
+        supportFragmentManager
+                .beginTransaction()
+                .replace(containerViewId, fragment, fragmentTag)
+                .addToBackStack(backStackStateName)
+                .commit()
+        currentDisplayedFragment = fragment
+        isFragmentDisplayed = true
+        showButtons(false)
+    }
+
+    fun deleteCurrentFragment(){
+        supportFragmentManager
+            .beginTransaction()
+            .remove(currentDisplayedFragment)
+            .commit()
+        isFragmentDisplayed = false
+    }
+
+    fun showButtons(show: Boolean){
+        if(show){
+            if(bottomSheetPoiBehavior?.state != BottomSheetBehavior.STATE_EXPANDED && bottomSheetEndBehavior?.state != BottomSheetBehavior.STATE_EXPANDED)
+            qrcode_button.show()
+            recenter_button.show()
+        }else{
+            qrcode_button.hide()
+            recenter_button.hide()
+        }
+    }
+
+    private fun manageStateTreasureHunt(){
+        if(userIsLookingForQRCode){
+            state_treasure_hunt_text.text = String.format(getString(R.string.text_find_qrcode), currentPoiRiddle.riddle.index)
+        }else if(userIsLookingForNextStepArea){
+            state_treasure_hunt_text.text = String.format(getString(R.string.text_find_area), nextPoiRiddleToDiscover.riddle.index)
+        }
     }
 
     /**
      * Enabling location symbol on the map if possible
      */
-    private fun enableLocationComponent(loadedMapStyle: Style) {
+    private fun enableLocationComponent(loadedMapStyle: Style, renderModeToUse: Int) {
 
         // Check if permissions are enabled and if not request
         if (PermissionsManager.areLocationPermissionsGranted(this)) {
 
             // Create and customize the LocationComponent's options
             val customLocationComponentOptions = LocationComponentOptions.builder(this)
-                    .trackingGesturesManagement(true)
-                    .accuracyColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
-                    .compassAnimationEnabled(true)
-                    .layerAbove(INVISIBLE_LAYER)
-                    .elevation(4f)
-                    .build()
+                .trackingGesturesManagement(true)
+                .accuracyColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
+                .compassAnimationEnabled(true)
+                //.layerAbove(INVISIBLE_LAYER)
+                .elevation(4f)
+                .build()
 
             val locationComponentActivationOptions = LocationComponentActivationOptions.builder(this, loadedMapStyle)
-                    .locationComponentOptions(customLocationComponentOptions)
-                    .locationEngine(locationEngine)
-                    .build()
+                .locationComponentOptions(customLocationComponentOptions)
+                .locationEngine(locationEngine)
+                .build()
 
             // Get an instance of the LocationComponent and then adjust its settings
             mapboxMap.locationComponent.apply {
@@ -402,12 +685,13 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
                 cameraMode = CameraMode.TRACKING_GPS_NORTH
 
                 // Set the LocationComponent's render mode
-                renderMode = RenderMode.GPS
+                renderMode = renderModeToUse
 
-                moveCameraOverhead()
+                if(renderModeToUse == RenderMode.GPS)
+                    moveCameraOverhead()
             }
         } else {
-            PermissionManager.checkIfLocationIsGranted(this@NavigateToPOIActivity)
+            PermissionManager.checkIfLocationIsGranted(this@NavigationTreasureHuntActivity)
 
             //permissionsManager = PermissionsManager(this)
             //permissionsManager.requestLocationPermissions(this)
@@ -423,8 +707,12 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
         bottomSheetEndBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         //bottomSheetEndBehavior?.isHideable = false
         recenter_button.hide()
+        qrcode_button.hide()
         finish_button.visibility = View.GONE
         resume_button.visibility = View.GONE
+        instructions_button.visibility = View.GONE
+        instruction_view_treasure_hunt.visibility = View.GONE
+        two_buttons_state_container.visibility = View.GONE
         initInstructionView()
         showCustomInstructionView(false)
         // TODO Improve distance algorithm computing when navigation is deactivated
@@ -437,33 +725,21 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
      * Init MapBox instruction view with user settings like language (for metrics)
      */
     private fun initInstructionView(){
-        if(currentRoute != null && currentRoute!!.isNavigationActivated!!){
-            val roundingIncrement = NavigationConstants.ROUNDING_INCREMENT_TWENTY_FIVE
-            val distanceFormatter = DistanceFormatter(this@NavigateToPOIActivity, ApplicationRunner.appLanguage.getLocaleLanguage(), ApplicationRunner.appDistanceMetrics.toString(), roundingIncrement)
-            instructionView.setDistanceFormatter(distanceFormatter)
 
-            instructionView.setInstructionListListener { visible ->
-                if(visible) showRecenterButton(true)
-                else showRecenterButton(false)
-            }
-        }else{
-            instructionView.visibility = View.GONE
-        }
     }
 
     /**
      * Displays a custom instruction view in case MapBox navigation is disabled - some routes does not use MapBox navigation
      */
     private fun showCustomInstructionView(show: Boolean){
-        if(show) instructionViewNoNavigation.visibility = View.VISIBLE
-        else instructionViewNoNavigation.visibility = View.GONE
+
     }
     /**
      * Callback once map is ready and loaded - we start to do things
      */
     override fun onMapReady(mapboxMap: MapboxMap) {
         this.mapboxMap = mapboxMap
-        this.mapboxMap.addOnMapClickListener(this@NavigateToPOIActivity)
+        this.mapboxMap.addOnMapClickListener(this@NavigationTreasureHuntActivity)
         mapboxMap.setStyle(Style.Builder().fromUri(getString(R.string.map_uri))) { style ->
 
             initMap()
@@ -479,7 +755,7 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
                 override fun onMove(detector: MoveGestureDetector) {
                     if(hasLeadStarted || hasRunStarted){
                         if(bottomSheetPoiBehavior?.state == BottomSheetBehavior.STATE_HIDDEN) // If POI bottom sheet is visible, we don't show it
-                            recenter_button.show()
+                            if(!isFragmentDisplayed) recenter_button.show()
                     }
                 }
 
@@ -488,8 +764,8 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
 
             })
 
-            displayRouteOnMap()
-            displayMarkersOnMap()
+            //displayRouteOnMap()
+            //displayMarkersOnMap()
 
             // We add POI images on map
             displayPOIS(style)
@@ -498,6 +774,9 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
             initializeLocationEngine()
 
             initLocalizationPlugin(mapView, mapboxMap, style)
+
+            style.addImage(DEPARTURE_MARKER_SOURCE, resources.getDrawable(R.drawable.start_flag))
+            style.addImage(ARRIVAL_MARKER_SOURCE, resources.getDrawable(R.drawable.finishflag_night_3x))
 
             setFlutterCustomColor()
 
@@ -508,7 +787,6 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
 
             // For navigation logic / processing
             initializeNavigation(mapboxMap)
-            //initObservers()
 
             //navigationMap!!.updateCameraTrackingMode(NavigationCamera.NAVIGATION_TRACKING_MODE_GPS)
             //navigationMap!!.updateLocationLayerRenderMode(RenderMode.GPS)
@@ -522,23 +800,18 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
         menu_layout.setBackgroundColor(Color.parseColor(AppDataHolder.gpsColor))
         start_navigation_holder.setBackgroundColor(Color.parseColor(AppDataHolder.gpsColor))
         gps_loader_holder.setBackgroundColor(Color.parseColor(AppDataHolder.gpsColor))
-        instructionView.setBackgroundColor(Color.parseColor(AppDataHolder.gpsColor))
         title_poi_textview.setTextColor(Color.parseColor(AppDataHolder.gpsColor))
         description_poi_textview.setTextColor(Color.parseColor(AppDataHolder.gpsColor))
-        title_stats_resume.setTextColor(Color.parseColor(AppDataHolder.gpsColor))
-        title_experience_resume.setTextColor(Color.parseColor(AppDataHolder.gpsColor))
         close_navigation.setBackgroundColor(Color.parseColor(AppDataHolder.gpsColor))
-        ic_speed.setColorFilter(Color.parseColor(AppDataHolder.gpsColor))
-        average_speed_textview.setTextColor(Color.parseColor(AppDataHolder.gpsColor))
-        speed_textview_static.setTextColor(Color.parseColor(AppDataHolder.gpsColor))
-        ic_timer.setColorFilter(Color.parseColor(AppDataHolder.gpsColor))
         total_time_textview.setTextColor(Color.parseColor(AppDataHolder.gpsColor))
-        duration_textview.setTextColor(Color.parseColor(AppDataHolder.gpsColor))
-        ic_flag_variant_outline.setColorFilter(Color.parseColor(AppDataHolder.gpsColor))
-        total_distance_travelled_textview.setTextColor(Color.parseColor(AppDataHolder.gpsColor))
-        length_textview.setTextColor(Color.parseColor(AppDataHolder.gpsColor))
+        right_answer_riddles.setTextColor(Color.parseColor(AppDataHolder.gpsColor))
+        rating_title.setTextColor(Color.parseColor(AppDataHolder.gpsColor))
+        rating_bottom_title.setTextColor(Color.parseColor(AppDataHolder.gpsColor))
+        rating_bottom_subtitle.setTextColor(Color.parseColor(AppDataHolder.gpsColor))
         recenter_button.backgroundTintList = ColorStateList.valueOf(Color.parseColor(AppDataHolder.gpsColor))
         recenter_button.setBackgroundColor(Color.parseColor(AppDataHolder.gpsColor))
+        qrcode_button.backgroundTintList = ColorStateList.valueOf(Color.parseColor(AppDataHolder.gpsColor))
+        qrcode_button.setBackgroundColor(Color.parseColor(AppDataHolder.gpsColor))
         val stars = rating.progressDrawable as LayerDrawable
         stars.getDrawable(2).setColorFilter(Color.parseColor(AppDataHolder.gpsColor), PorterDuff.Mode.SRC_ATOP)
     }
@@ -546,71 +819,75 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
     /**
      * Internet method to display all route POIs on the map (markers)
      */
-    private fun displayPOIS(style : Style){
+    private fun displayPOIS(style : Style?){
 
         var arrayPOIS = currentRoute!!.arrayPois
-        if(currentRoute!!.hasStartingPoints){
+        /**if(currentRoute!!.hasStartingPoints){
             arrayPOIS = ArrayList<POI>(arrayPOIS.subList(AppDataHolder.currentStartingPoint?.posPOI!!, arrayPOIS.size))
-        }
+        }**/
 
         POI.Type.values().forEach { type ->
+
+            var poiFeatures = ArrayList<Feature>()
+
             // Applying image for current type of POI
-            if(!hasUserRequestedMockNavigation){
-                if(MapUtils.shouldDisplayPOICateg(type))
-                    style.addImage(type.id.toString(), resources.getDrawable(POI.Type.getDrawableID(type.id)))
-            }else{
-                style.addImage(type.id.toString(), resources.getDrawable(POI.Type.getDrawableID(type.id)))
-            }
-
-
-            // We get all pois matching current type from route
-            var matchingPOIS = arrayPOIS.filter { poi ->
-                poi.type == type
-            }
+            style?.addImage(type.id.toString(), resources.getDrawable(POI.Type.getDrawableID(type.id)))
 
             // Adding locations for current type of POI
-            var poiFeatures = ArrayList<Feature>()
-            matchingPOIS.forEach { poi ->
+            arrayPoiRiddlesValidated.forEach { poi ->
+
+                // Adding source for current type of POI
                 var feature = Feature.fromGeometry(Point.fromLngLat(poi.arrayCoordinates.first().longitude, poi.arrayCoordinates.first().latitude))
                 poiFeatures.add(feature)
                 displayedFeatures.add(feature)
+            }
 
-                if(hasUserRequestedMockNavigation){
+            if(style?.getSource(MARKER_SOURCE+type.toString()) != null){
+                var source = style.getSourceAs<GeoJsonSource>(MARKER_SOURCE+type.toString())
+                source?.setGeoJson(FeatureCollection.fromFeatures(poiFeatures))
+            }else{
+                style?.addSource(GeoJsonSource(MARKER_SOURCE+type.toString(), FeatureCollection.fromFeatures(poiFeatures)))
+            }
+
+            arrayPoiRiddlesDiscovered.forEach { poi ->
+
+                // Adding radius around POIs
+                if(style?.getLayer(RADIUS_MARKER_STYLE_LAYER + poi.id) == null){
 
                     // Adding source for current type of POI
-                    if(style.getSource(RADIUS_MARKER_SOURCE + poi.id) == null)
-                        style.addSource(
-                                GeoJsonSource(RADIUS_MARKER_SOURCE + poi.id, TurfTransformation.circle(
-                                        Point.fromLngLat(poi.mainCoordinates.longitude, poi.mainCoordinates.latitude), poi.radius.toDouble(), 64, "meters")))
+                    if(style?.getSource(RADIUS_MARKER_SOURCE + poi.id) == null)
+                        style?.addSource(
+                            GeoJsonSource(RADIUS_MARKER_SOURCE + poi.id, TurfTransformation.circle(
+                                Point.fromLngLat(poi.mainCoordinates.longitude, poi.mainCoordinates.latitude), poi.radius.toDouble(), 64, "meters")))
 
                     val layer = FillLayer(RADIUS_MARKER_STYLE_LAYER + poi.id, RADIUS_MARKER_SOURCE + poi.id)
                     //val layer = CircleLayer(poi.id, RADIUS_MARKER_SOURCE + poi.id)
                     layer.withProperties(
-                            fillColor("#000000"),
-                            fillOpacity(0.5f)
+                        fillColor(resources.getColor(R.color.colorPrimary)),
+                        fillOpacity(0.5f)
                     )
 
                     //style.addLayerAbove(layer, MARKER_STYLE_LAYER+type.toString())
                     //style.addLayerBelow(layer, INVISIBLE_LAYER)
-                    style.addLayerAt(layer, 50)
+                    style?.addLayerAt(layer, 50)
                 }
+
             }
 
-            // Adding source for current type of POI
-            if(style.getSource(MARKER_SOURCE+type.toString()) == null)
-                style.addSource(GeoJsonSource(MARKER_SOURCE+type.toString(), FeatureCollection.fromFeatures(poiFeatures)))
+
 
 
             // Applying layer for current type of POI
-            if(style.getLayer(MARKER_STYLE_LAYER+type.toString()) == null)
-                style.addLayerAbove(SymbolLayer(MARKER_STYLE_LAYER+type.toString(), MARKER_SOURCE+type.toString())
-                        .withProperties(
-                                iconAllowOverlap(true),
-                                iconIgnorePlacement(true),
-                                iconImage(type.id.toString()),
-                                iconSize(0.5f),
-                                iconOffset(arrayOf(0f, -52f))
-                        ), "route-line-layer")
+            if(style?.getLayer(MARKER_STYLE_LAYER+type.toString()) == null)
+                style?.addLayer(SymbolLayer(MARKER_STYLE_LAYER+type.toString(), MARKER_SOURCE+type.toString())
+                    .withProperties(
+                        iconAllowOverlap(true),
+                        iconIgnorePlacement(true),
+                        iconImage(type.id.toString()),
+                        iconSize(0.5f),
+                        iconOffset(arrayOf(0f, -52f))
+                    ))
+
             /**style.addLayerAt(SymbolLayer(MARKER_STYLE_LAYER+type.toString(), MARKER_SOURCE+type.toString())
             .withProperties(
             iconAllowOverlap(true),
@@ -633,29 +910,30 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
     private fun displayMarkersOnMap(){
 
 
-        var departureFeature = Feature.fromGeometry(Point.fromLngLat(AppDataHolder.currentStartingPoint?.long!!, AppDataHolder.currentStartingPoint?.lat!!))
+       //TODO
+        // var departureFeature = Feature.fromGeometry(Point.fromLngLat(AppDataHolder.currentStartingPoint?.long!!, AppDataHolder.currentStartingPoint?.lat!!))
         var arrivalFeature = Feature.fromGeometry(Point.fromLngLat(currentRoute?.arrayCoordinates?.last()?.longitude!!, currentRoute?.arrayCoordinates?.last()?.latitude!!))
 
-        loadedStyle?.addSource(GeoJsonSource(DEPARTURE_MARKER_SOURCE, FeatureCollection.fromFeature(departureFeature)))
+        //loadedStyle?.addSource(GeoJsonSource(DEPARTURE_MARKER_SOURCE, FeatureCollection.fromFeature(departureFeature)))
         loadedStyle?.addSource(GeoJsonSource(ARRIVAL_MARKER_SOURCE, FeatureCollection.fromFeature(arrivalFeature)))
 
         loadedStyle?.addLayerAbove(SymbolLayer(DEPARTURE_MARKER_SOURCE, DEPARTURE_MARKER_SOURCE)
-                .withProperties(
-                        iconAllowOverlap(true),
-                        iconIgnorePlacement(true),
-                        iconImage(DEPARTURE_MARKER_SOURCE),
-                        iconSize(0.5f),
-                        iconOffset(arrayOf(0f, -52f))
-                ), "route-line-layer")
+            .withProperties(
+                iconAllowOverlap(true),
+                iconIgnorePlacement(true),
+                iconImage(DEPARTURE_MARKER_SOURCE),
+                iconSize(0.5f),
+                iconOffset(arrayOf(0f, -52f))
+            ), "route-line-layer")
 
         loadedStyle?.addLayerAbove(SymbolLayer(ARRIVAL_MARKER_SOURCE, ARRIVAL_MARKER_SOURCE)
-                .withProperties(
-                        iconAllowOverlap(true),
-                        iconIgnorePlacement(true),
-                        iconImage(ARRIVAL_MARKER_SOURCE),
-                        iconSize(0.5f),
-                        iconOffset(arrayOf(0f, -52f))
-                ), "route-line-layer")
+            .withProperties(
+                iconAllowOverlap(true),
+                iconIgnorePlacement(true),
+                iconImage(ARRIVAL_MARKER_SOURCE),
+                iconSize(0.5f),
+                iconOffset(arrayOf(0f, -52f))
+            ), "route-line-layer")
 
     }
 
@@ -671,7 +949,7 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
             var screenPoint = mapboxMap.projection.toScreenLocation(point)
             var rectF = RectF(screenPoint.x - 10, screenPoint.y - 10, screenPoint.x + 10, screenPoint.y + 10)
             var features = mapboxMap.queryRenderedFeatures(rectF, MARKER_STYLE_LAYER+type.toString())
-            Log.d("onMapClick", "features for ${type.toString()} found ${features.size}")
+            Log.d("onMapClick", "features for $type found ${features.size}")
             if(features.size > 0)
                 clickedFeatures = features
         }
@@ -694,7 +972,13 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
             }
             //moveCameraOnPOI(closestPOI!!.mainCoordinates)
             //moveCameraTo(closestPOI!!.mainCoordinates)
+            navigationMap!!.retrieveMap().animateCamera(
+                CameraUpdateFactory.newCameraPosition(CameraPosition.Builder()
+                    .target(LatLng(closestPOI?.mainCoordinates?.latitude!!, closestPOI?.mainCoordinates?.longitude!!))
+                    .build()), TWO_SECONDS_IN_MILLISECONDS
+            )
             currentDisplayedPOI = closestPOI
+            if(bottomSheetEndBehavior?.state != BottomSheetBehavior.STATE_EXPANDED) displayBottomSheetFor(currentDisplayedPOI!!, true)
             return true
         }else{
             return false
@@ -737,16 +1021,17 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
 
     // Once navigation is finished
     override fun onNavigationFinished() {
-        /*if(hasLeadStarted && !hasRunStarted){
-            if(currentRoute?.hasStartingPoints!!){
+        if(hasLeadStarted && !hasRunStarted){
+            /**if(currentRoute?.hasStartingPoints!!){
                 startRunNavigation(MapUtils.computeRouteCoordinatesBasedOnClosestPoint(AppDataHolder.currentStartingPoint?.getLocation()!!, currentRoute!!.arrayCoordinates!!.subList(AppDataHolder.currentStartingPoint?.pos!!, currentRoute!!.arrayCoordinates!!.size)))
             }else{
                 startRunNavigation(MapUtils.computeRouteCoordinatesBasedOnClosestPoint(lastLocation!!, currentRoute!!.arrayCoordinates!!))
-            }
+            }**/
+            //startRunNavigation(MapUtils.computeRouteCoordinatesBasedOnClosestPoint(lastLocation!!, currentRoute!!.arrayCoordinates!!))
+            startTreasureHunt()
         }else if(hasRunStarted){
             finishNavigation(true)
-        }*/
-        finishNavigation(true)
+        }
     }
 
     // While navigation is up and running
@@ -767,7 +1052,6 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
         updateLocation(location)
 
         // Update InstructionView data from RouteProgress
-        instructionView.updateDistanceWith(routeProgress)
 
         // Updating stats on the view
         updateStats(routeProgress.distanceRemaining())
@@ -776,8 +1060,7 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
 
         // Detecting if user has arrived at the end of the route
         val ru = RouteUtils()
-        //if(ru.isArrivalEvent(routeProgress) && hasRunStarted && currentRoute!!.isNavigationActivated!!){
-        if(ru.isArrivalEvent(routeProgress)){
+        if(ru.isArrivalEvent(routeProgress) && hasRunStarted && currentRoute!!.isNavigationActivated!!){
             finishNavigation(true)
         }
     }
@@ -802,10 +1085,10 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
                 checkIfUserHasArrived()
         }
 
-        if(hasRunStarted && navigationState == NavigationState.IN_PROGRESS){
+        if((hasRunStarted || hasTreasureHuntStarted) && navigationState == NavigationState.IN_PROGRESS){
             if(timer != 0L)
                 timer_textview.text = MetricsUtils.displayMillisecondsToSecondsFormatted(
-                        NavigationUtils.currentStopWatchTimer!!.elapsedTime)
+                    NavigationUtils.currentStopWatchTimer!!.elapsedTime)
             totalTimeInMS += (timer-previousTime)
             previousTime = timer
             currentRunSession?.duration = NavigationUtils.currentStopWatchTimer!!.elapsedTime
@@ -839,7 +1122,6 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
         playAnnouncement(milestone)
 
         // Update InstructionView banner instructions
-        instructionView.updateBannerInstructionsWith(milestone)
     }
 
     /**
@@ -871,7 +1153,7 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
             //showSnackbar(GPS_FOUND_MESSAGE, BaseTransientBottomBar.LENGTH_LONG)
             setGPSSignal(true)
             //showNavigationHolderLayout(true)
-            checkIfUserIsTooFarFromRoute(location)
+            checkIfUserIsTooFarFromTreasureHuntDeparture(location)
         }
     }
 
@@ -890,15 +1172,31 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     /**
+     * Method made to check if the user is considered as too far from the treasure hunt departure
+     */
+    private fun checkIfUserIsTooFarFromTreasureHuntDeparture(location: Location?) : Boolean{
+        var distanceFromRoute = MapUtils.getDistanceFromLocation(location!!, arrayPoiRiddles.first().mainCoordinates)
+        Timber.d("distance from start of treasure hunt : $distanceFromRoute // ${((arrayPoiRiddles.first().radius).toFloat()/1000).toDouble()}")
+        if(distanceFromRoute > ((arrayPoiRiddles.first().radius).toFloat()/1000).toDouble()){
+            isUserTooFarFromRoute = true
+            return true
+        }else{
+            isUserTooFarFromRoute = false
+            return false
+        }
+    }
+
+    /**
      * This methods manages the view (bottom banner with action buttons) based on the state of the navigation
      */
     private fun manageNavigationState(){
         when (navigationState) {
             NavigationState.WAITING_TO_START -> {
                 navigation_state_button.text = getString(R.string.label_press_to_pause)
-                showVisibilityToolbar(false)
+                showToolbar(false)
                 finish_button.visibility = View.VISIBLE
                 resume_button.visibility = View.GONE
+                two_buttons_state_container.visibility = View.VISIBLE
                 //navigationState = NavigationState.IN_PROGRESS
             }
             NavigationState.IN_PROGRESS -> {
@@ -907,8 +1205,8 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
                 finish_button.visibility = View.VISIBLE
                 resume_button.visibility = View.VISIBLE
                 navigationState = NavigationState.PAUSED
-                audioService.playTTS(LanguageResource.languagesResources.pauseNavigation, true, true)
-                showVisibilityToolbar(false)
+                audioService.playTTS(LanguageResource.languagesResources.pauseTreasureHunt, true, true)
+                showToolbar(false)
                 NavigationUtils.currentStopWatchTimer?.pause()
             }
             NavigationState.PAUSED -> {
@@ -919,7 +1217,7 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
                 resume_button.visibility = View.GONE
                 if(NavigationUtils.currentStopWatchTimer != null && NavigationUtils.currentStopWatchTimer!!.isPaused)
                     NavigationUtils.currentStopWatchTimer?.resume()
-                audioService.playTTS(LanguageResource.languagesResources.resumeNavigation, true, true)
+                audioService.playTTS(LanguageResource.languagesResources.resumeTreasureHunt, true, true)
             }
             NavigationState.FINISHED -> {
                 navigation_state_button.text = getString(R.string.action_start_navigation)
@@ -955,7 +1253,7 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
         else start_navigation_holder.visibility = View.GONE
     }
 
-    private fun showVisibilityToolbar(visible: Boolean){
+    private fun showToolbar(visible: Boolean){
         if(visible) toolbar.visibility = View.VISIBLE
         else toolbar.visibility = View.GONE
     }
@@ -976,22 +1274,15 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
         updateStats(0.0, System.currentTimeMillis(), location.speed)
         checkIfBannerIsDisplayed()
 
-        if(hasUserRequestedNavigation || hasUserRequestedMockNavigation){
-            if(hasRunStarted){
+        if(hasUserRequestedNavigation){
+            if(hasTreasureHuntStarted){
                 checkIfUserIsNearPOI(location)
-                if(!currentRoute!!.isNavigationActivated!!)
-                    userOffRoute(location)
-                else saveStatistics()
-            }else{
-                /*if(!checkIfUserIsTooFarFromRoute(location)){
-                    navigation!!.stopNavigation()
-                    //audioService.playTTS(LanguageResource.getLanguagesResources().routeReached, true, true)
-                    if(currentRoute?.hasStartingPoints!!)
-                        startRunNavigation(MapUtils.computeRouteCoordinatesBasedOnClosestPoint(AppDataHolder.currentStartingPoint?.getLocation()!!, currentRoute!!.arrayCoordinates!!.subList(AppDataHolder.currentStartingPoint?.pos!!, currentRoute!!.arrayCoordinates!!.size)))
-                    else
-                        startRunNavigation(MapUtils.computeRouteCoordinatesBasedOnClosestPoint(location!!, currentRoute!!.arrayCoordinates!!))
-                }else{*/
-                    checkIfUserIsNearPOI(location)
+                saveStatistics()
+            }
+            else{
+                if(!checkIfUserIsTooFarFromTreasureHuntDeparture(location)){
+                    startTreasureHunt()
+                }else if(!hasTreasureHuntStarted){ // No need to redirect user when he is playing
                     var computedClosestpoint = MapUtils.getClosestPointFromUser(location, MapUtils.convertCoordinatesToPoints(currentRoute!!.arrayCoordinates!!))
                     if(computedClosestpoint != closestRoutePoint){ // If our destination point to lead to run is different
                         // We need to check if there is an important difference for user between the two points
@@ -1008,7 +1299,7 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
                     }else if(MapUtils.getDistanceFromLocation(lastLocation!!, startingLocation!!) > 0.1){
                         leadUserToRunRoute()
                     }
-                //}
+                }
             }
         }
 
@@ -1040,63 +1331,88 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
      */
     private fun checkIfUserIsNearPOI(userLocation: Location){
         isMapboxSpeakerMuted = checkIfMapboxSpeakIsMuted(userLocation, currentBlockerPOI) // Should we read POI ?
-        currentRoute!!.arrayPois.forEach { poi ->
-            MapUtils.getDistancesFromPOI(userLocation, poi).forEach { distance -> // Checking distance from every POI
-                Log.d("checkIfUserIsNearPOI", "distance from POI ${poi.name}: $distance <? ${((poi.radius).toFloat()/1000).toDouble()}")
-                if(distance <= ((poi.radius).toFloat()/1000).toDouble()){ // If user is the POI radius
-                    // If the poi is made to block mapbox intructions
-                    if(poi.doesBlockMapboxSpeaker != null && poi.doesBlockMapboxSpeaker){
-                        currentBlockerPOI = poi
-                    }
+        MapUtils.getDistancesFromPOI(userLocation, nextPoiRiddleToDiscover).forEach { distance -> // Checking distance from every POI
+                Log.d("checkIfUserIsNearPOI", "distance from POI ${nextPoiRiddleToDiscover.name}: $distance <? ${((nextPoiRiddleToDiscover.radius).toFloat()/1000).toDouble()}")
+                if(distance <= ((nextPoiRiddleToDiscover.radius).toFloat()/1000).toDouble()){ // If user is the POI radius
 
-                    if(!poi.isSeen){ // Checking that POI has never been played
-                        if(poi.isMP3Activated != null && poi.isMP3Activated){ // Checking if we need to play vocal MP3 instead of text
-                            audioService.playDescriptionMP3(poi, this@NavigateToPOIActivity)
-                            poi.isSeen = true
-                        }else{ // We read text
-                            if(poi.type == POI.Type.DIRECTIONNAL_CLOCKWISE || poi.type == POI.Type.DIRECTIONNAL_COUNTERCLOCKWISE){ // Checking if this is a handmade navigation instruction
-                                audioService.playTTS(SpeechAnnouncement.builder().announcement(poi.description).build(), true)
-                                // We need to display custom instruction
-                                if(currentRoute!!.isNavigationActivated!!){
-                                    // TODO override mapbox instructions
-                                }else{
-                                    maneuver_instruction.text = poi.description
-                                    maneuver_image.setImageDrawable(getDrawable(POI.Direction.getDrawableID(poi.idDirection)))
-                                    Handler().postDelayed({
-                                        runOnUiThread {
-                                            maneuver_instruction.text = ""
-                                            maneuver_image.setImageDrawable(null)
-                                        }
-                                    }, INSTRUCTION_DURATION_DISPLAY)
-                                }
-                            }
-                            else{ // This is a "normal" POI
-                                if(currentRoute!!.isSynthActivated!!){ // We check that route has synthetizer activated
-                                    if(poi.isAutoDirectionAcivated)
-                                        audioService.playTTS(audioService.generateAudioDescriptionForPOI(previousLocation, userLocation, poi), false, true)
-                                    else{
-                                        audioService.playTTS(poi.description, false, true)
-                                    }
-                                }
-                                else{ // We don't read any description, simply a generic message
-                                    audioService.playTTS(LanguageResource.languagesResources.infoPOINearby, true, true)
-                                }
-                            }
-                            poi.isSeen = true
+                    if(!nextPoiRiddleToDiscover.isSeen && !arrayPoiRiddlesValidated.contains(nextPoiRiddleToDiscover)){ // Checking that POI has never been played and has not been already discovered
+
+                        discoverPoiRiddle(nextPoiRiddleToDiscover)
+                        nextPoiRiddleToDiscover = arrayPoiRiddles[(arrayPoiRiddlesDiscovered.last().riddle.index).toInt()]
+
+                        if(nextPoiRiddleToDiscover.type == POI.Type.DIRECTIONNAL_CLOCKWISE || nextPoiRiddleToDiscover.type == POI.Type.DIRECTIONNAL_COUNTERCLOCKWISE){ // Checking if this is a handmade navigation instruction
+                            audioService.playTTS(SpeechAnnouncement.builder().announcement(nextPoiRiddleToDiscover.description).build(), true)
+                            // We need to display custom instruction
                         }
+                        else{ // This is a "normal" POI
+                            if(currentRoute!!.isSynthActivated!!){ // We check that route has synthetizer activated
+                                if(nextPoiRiddleToDiscover.isAutoDirectionAcivated)
+                                    audioService.playTTS(audioService.generateAudioDescriptionForPOI(previousLocation, userLocation, nextPoiRiddleToDiscover), false, true)
+                                else{
+                                    if(AppConfiguration.Navigation.useCustomAudioDescriptionForPOI)
+                                        Timber.i("AppConfiguration.Navigation.useCustomAudioDescriptionForPOI TODO")
+                                        //audioService.playTTS(SpeechAnnouncement.builder().announcement(poi.audio).build(), true)
+                                    else
+                                        audioService.playTTS(nextPoiRiddleToDiscover.description, false, true)
+                                }
+                            }
+                            else{ // We don't read any description, simply a generic message
+                                if(AppConfiguration.Navigation.useCustomAudioDescriptionForPOI)
+                                    Timber.i("AppConfiguration.Navigation.useCustomAudioDescriptionForPOI TODO")
+                                    //audioService.playTTS(SpeechAnnouncement.builder().announcement(poi.audio).build(), true)
+                                else
+                                    audioService.playTTS(LanguageResource.languagesResources.infoPOINearby, true, true)
+                            }
+                        }
+                        nextPoiRiddleToDiscover.isSeen = true
+
                         // As we enter the radius, we check if we need to display the nearby POI
-                        if(MapUtils.shouldDisplayPOI(poi)){
-                            AppDataHolder.currentPOI = poi
-                            if(poi.id != idGoodDealDisplayed && !isGoodDealDisplayed) displayBottomSheetFor(poi) //Or Banner
+                        if(MapUtils.shouldDisplayPOI(nextPoiRiddleToDiscover)){
+                            AppDataHolder.currentPOI = nextPoiRiddleToDiscover
+                            //if(nextPoiRiddleToDiscover.id != idGoodDealDisplayed && !isGoodDealDisplayed) displayBannerFor(nextPoiRiddleToDiscover)
                             PhoneUtils.triggerVibration(500)
                         }
-                        //StatisticManager.poiListened(poi)
+                        //StatisticManager.poiListened(nextPoiRiddleToDiscover)
                     }
-                }else{
-                    // In case we are no longer in the area of displayed poi -- we hide bottom sheet
                 }
             }
+    }
+
+    /**
+     * User has discovered poi riddle
+     */
+    private fun discoverPoiRiddle(poi: POI){
+
+        arrayPoiRiddlesDiscovered.add(poi)
+        currentPoiRiddle = poi
+        if(currentPoiRiddle.riddle.index == 1L){
+            displayIntroTreasureHunt()
+            audioService.playMP3(AppPropertiesConfiguration.arrayAudioTreasureHuntIntro[ApplicationRunner.appLanguage]!!)
         }
+        else{
+            displayRiddleDiscoveredFragment()
+            audioService.playMP3(AppPropertiesConfiguration.arrayAudioTreasureHuntSecretArea[ApplicationRunner.appLanguage]!!)
+        }
+        displayPOIS(loadedStyle)
+        userIsLookingForQRCode = true
+        manageStateTreasureHunt()
+    }
+
+    private fun validRiddle(poi: POI){
+        if(poi.riddle.index.toInt() == currentRoute!!.arrayPois.size){ // In case we are validating last riddle --
+            finishNavigation(true)
+        }else{
+            if(!arrayPoiRiddlesValidated.contains(poi)) arrayPoiRiddlesValidated.add(poi)
+            nextPoiRiddleToDiscover.isSeen = false
+            displayPOIS(loadedStyle)
+            displayBottomSheetFor(poi, false)
+            AudioService.getInstance().playTTS(poi.description, false, true)
+            instructions_button.visibility = View.VISIBLE
+            userIsLookingForQRCode = false
+            userIsLookingForNextStepArea = true
+            manageStateTreasureHunt()
+        }
+
     }
 
     /**
@@ -1115,16 +1431,16 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
     private fun initializeSpeechPlayer() {
         val appLanguage = ApplicationRunner.appLanguage.getLocaleLanguage()
         val cache = Cache(
-                File(application.cacheDir, COMPONENT_NAVIGATION_INSTRUCTION_CACHE),
-                TEN_MEGABYTE_CACHE_SIZE
+            File(application.cacheDir, COMPONENT_NAVIGATION_INSTRUCTION_CACHE),
+            TEN_MEGABYTE_CACHE_SIZE
         )
         val voiceInstructionLoader = VoiceInstructionLoader(
-                application,
-                Mapbox.getAccessToken(), cache
+            application,
+            Mapbox.getAccessToken(), cache
         )
         val speechPlayerProvider = SpeechPlayerProvider(
-                application, appLanguage, true,
-                voiceInstructionLoader
+            application, appLanguage, true,
+            voiceInstructionLoader
         )
         speechPlayer = NavigationSpeechPlayer(speechPlayerProvider)
     }
@@ -1176,7 +1492,7 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
             text_loader.text = getString(R.string.message_searching_for_gps)
             progress_bar_loader.visibility = View.VISIBLE
             progress_bar_loader.indeterminateDrawable.setColorFilter(resources.getColor(R.color.white),
-                    android.graphics.PorterDuff.Mode.MULTIPLY)
+                android.graphics.PorterDuff.Mode.MULTIPLY)
             start_navigation_holder.visibility = View.GONE
         }
         else{
@@ -1224,61 +1540,15 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
         navigation!!.locationEngine = (locationEngine as ReplayRouteLocationEngine)
     }
 
-    private fun displayRouteOnMap(){
-
-        var arrayFeatures = ArrayList<Feature>()
-        var sortedArrayPoints: ArrayList<Point>
-
-        if(!currentRoute?.hasStartingPoints!!){
-            sortedArrayPoints = MapUtils.convertCoordinatesToPoints(currentRoute!!.previewCoordinates!!)
-            if(currentRoute?.isLoop!!)
-                sortedArrayPoints.add(MapUtils.convertLocationToPoint(currentRoute!!.previewCoordinates!!.first())) // We add first location in order to join first and last location graphically when drawing
-        }else{
-            sortedArrayPoints = MapUtils.convertCoordinatesToPoints((currentRoute!!.previewCoordinates!!.subList(AppDataHolder.currentStartingPoint?.pos!!, currentRoute!!.previewCoordinates!!.size)))
-        }
-
-        arrayFeatures.add(
-                Feature.fromGeometry(
-                        LineString.fromLngLats(sortedArrayPoints)
-                ))
-
-        loadedStyle!!.addSource(GeoJsonSource(INVISIBLE_SOURCE))
-        loadedStyle!!.addLayer(LineLayer(INVISIBLE_LAYER, INVISIBLE_SOURCE))
-
-        // We add polyline of route on map
-        // Create the LineString from the list of coordinates and then make a GeoJSON
-        // FeatureCollection so we can add the line to our map as a layer.
-        try{
-            loadedStyle!!.addSource(GeoJsonSource("line-source", FeatureCollection.fromFeatures(arrayFeatures)))
-        }catch(exception: Exception){
-            Log.e("crash", exception.localizedMessage)
-        }
-        // The layer properties for our line. This is where we make the line dotted, set the
-        // color, etc.
-        try{
-            loadedStyle!!.addLayerBelow(
-                    LineLayer("route-line-layer", "line-source").withProperties(
-                            iconAllowOverlap(true),
-                            iconIgnorePlacement(true),
-                            lineCap(Property.LINE_CAP_ROUND),
-                            lineJoin(Property.LINE_JOIN_ROUND),
-                            lineWidth(8f),
-                            lineColor(Color.TRANSPARENT)
-                    ), INVISIBLE_LAYER)
-        }catch(exception: Exception){
-            Log.e("crash", exception.localizedMessage)
-        }
-    }
-
     private fun displayDebugRouteOnMap(arrayCoordinates : List<Location>){
 
         var arrayFeatures = ArrayList<Feature>()
         var sortedArrayPoints = MapUtils.convertCoordinatesToPoints(arrayCoordinates)
         sortedArrayPoints.add(MapUtils.convertLocationToPoint(arrayCoordinates.first())) // We add first location in order to join first and last location graphically when drawing
         arrayFeatures.add(
-                Feature.fromGeometry(
-                        LineString.fromLngLats(sortedArrayPoints)
-                ))
+            Feature.fromGeometry(
+                LineString.fromLngLats(sortedArrayPoints)
+            ))
         // We add polyline of route on map
         // Create the LineString from the list of coordinates and then make a GeoJSON
         // FeatureCollection so we can add the line to our map as a layer.
@@ -1291,14 +1561,14 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
         // color, etc.
         try{
             loadedStyle!!.addLayer(
-                    LineLayer("route-line-layer", "line-source-debug").withProperties(
-                            iconAllowOverlap(true),
-                            iconIgnorePlacement(true),
-                            PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
-                            PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
-                            PropertyFactory.lineWidth(3f),
-                            PropertyFactory.lineColor(resources.getColor(R.color.mapbox_navigation_route_alternative_congestion_red))
-                    ))
+                LineLayer("route-line-layer", "line-source-debug").withProperties(
+                    iconAllowOverlap(true),
+                    iconIgnorePlacement(true),
+                    PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
+                    PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
+                    PropertyFactory.lineWidth(3f),
+                    PropertyFactory.lineColor(resources.getColor(R.color.mapbox_navigation_route_alternative_congestion_red))
+                ))
         }catch(exception: Exception){
             Log.e("crash", exception.localizedMessage)
         }
@@ -1307,8 +1577,8 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
     private fun playAnnouncement(milestone: Milestone) {
         if (milestone is VoiceInstructionMilestone) {
             val announcement = SpeechAnnouncement.builder()
-                    .voiceInstructionMilestone(milestone)
-                    .build()
+                .voiceInstructionMilestone(milestone)
+                .build()
             if(!isMapboxSpeakerMuted)
                 AudioService.getInstance().playTTS(announcement, true)
             //speechPlayer!!.play(announcement)
@@ -1321,35 +1591,35 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
     private fun moveCameraTo(location: Location) {
         val cameraPosition = buildCameraPositionFrom(location, location.bearing.toDouble())
         navigationMap!!.retrieveMap().animateCamera(
-                CameraUpdateFactory.newCameraPosition(cameraPosition), TWO_SECONDS_IN_MILLISECONDS
+            CameraUpdateFactory.newCameraPosition(cameraPosition), TWO_SECONDS_IN_MILLISECONDS
         )
     }
 
     private fun moveCameraOnPOI(location: Location){
         val cameraPosition = buildCameraPositionFrom(location, location.bearing.toDouble())
         navigationMap!!.retrieveMap().animateCamera(
-                CameraUpdateFactory.newCameraPosition(cameraPosition), TWO_SECONDS_IN_MILLISECONDS
+            CameraUpdateFactory.newCameraPosition(cameraPosition), TWO_SECONDS_IN_MILLISECONDS
         )
     }
 
     private fun moveCameraToInclude(destination: Point) {
         val origin = LatLng(lastLocation!!)
         val bounds = LatLngBounds.Builder()
-                .include(origin)
-                .include(LatLng(destination.latitude(), destination.longitude()))
-                .build()
+            .include(origin)
+            .include(LatLng(destination.latitude(), destination.longitude()))
+            .build()
         val resources = resources
         val routeCameraPadding =
-                resources.getDimension(R.dimen.component_navigation_route_camera_padding).toInt()
+            resources.getDimension(R.dimen.component_navigation_route_camera_padding).toInt()
         val padding = intArrayOf(
-                routeCameraPadding,
-                routeCameraPadding,
-                routeCameraPadding,
-                routeCameraPadding
+            routeCameraPadding,
+            routeCameraPadding,
+            routeCameraPadding,
+            routeCameraPadding
         )
         val cameraPosition = navigationMap!!.retrieveMap().getCameraForLatLngBounds(bounds, padding)
         navigationMap!!.retrieveMap().animateCamera(
-                CameraUpdateFactory.newCameraPosition(cameraPosition!!), TWO_SECONDS_IN_MILLISECONDS
+            CameraUpdateFactory.newCameraPosition(cameraPosition!!), TWO_SECONDS_IN_MILLISECONDS
         )
     }
 
@@ -1359,7 +1629,7 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
         }
         val cameraPosition = buildCameraPositionFrom(lastLocation!!, DEFAULT_BEARING)
         navigationMap!!.retrieveMap().animateCamera(
-                CameraUpdateFactory.newCameraPosition(cameraPosition), TWO_SECONDS_IN_MILLISECONDS
+            CameraUpdateFactory.newCameraPosition(cameraPosition), TWO_SECONDS_IN_MILLISECONDS
         )
     }
 
@@ -1373,21 +1643,21 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
 
     private fun buildCameraPositionFrom(location: Location, bearing: Double): CameraPosition {
         return CameraPosition.Builder()
-                .zoom(DEFAULT_ZOOM)
-                .target(LatLng(location.latitude, location.longitude))
-                .bearing(bearing)
-                .tilt(DEFAULT_TILT)
-                .build()
+            .zoom(DEFAULT_ZOOM)
+            .target(LatLng(location.latitude, location.longitude))
+            .bearing(bearing)
+            .tilt(DEFAULT_TILT)
+            .build()
     }
 
     private fun adjustMapPaddingForNavigation() {
         val resources = resources
-        val mapViewHeight = mapView!!.height
+        val mapViewHeight = mapView.height
         val bottomSheetHeight =
-                resources.getDimension(R.dimen.component_navigation_bottomsheet_height).toInt()
+            resources.getDimension(R.dimen.component_navigation_bottomsheet_height).toInt()
         val topPadding = mapViewHeight - bottomSheetHeight * BOTTOMSHEET_PADDING_MULTIPLIER
         navigationMap!!.retrieveMap()
-                .setPadding(ZERO_PADDING, topPadding, ZERO_PADDING, ZERO_PADDING)
+            .setPadding(ZERO_PADDING, topPadding, ZERO_PADDING, ZERO_PADDING)
     }
 
     private fun resetMapAfterNavigation() {
@@ -1435,49 +1705,28 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
     })
     }**/
 
-    /*private fun startRunNavigation(arrayCoordinates : List<Location>) {
-        // Transition to navigation state
-        mapState = MapState.NAVIGATION
+    private fun startTreasureHunt(){
+        hasTreasureHuntStarted = true
 
-        currentRunSession = RunSession.initSession(currentRoute!!, System.currentTimeMillis())
+        navigation!!.stopNavigation()
+        navigationMap!!.removeRoute()
 
-        Handler().postDelayed({
-            hasRunStarted = true
-        }, 2000)
-
-        //cancelNavigationFab.show()
-
-        // Show the InstructionView
-        //TransitionManager.beginDelayedTransition(navigationLayout)
-        instructionView.visibility = View.VISIBLE
-
-        adjustMapPaddingForNavigation()
-        // Updates camera with last location before starting navigating,
-        // making sure the route information is updated
-        // by the time the initial camera tracking animation is fired off
-        // Alternatively, NavigationMapboxMap#startCamera could be used here,
-        // centering the map camera to the beginning of the provided route
-        navigationMap!!.resumeCamera(lastLocation!!)
-        loadedStyle!!.removeSource("line-source")
-        loadedStyle!!.removeLayer("route-line-layer")
-        navigationMap!!.updateLocationLayerRenderMode(RenderMode.GPS)
-
-        // We check if we need to activate mapbox or not
-        if(currentRoute!!.isNavigationActivated!!){
-            fetchRoute(arrayCoordinates)
-            // Location updates will be received from ProgressChangeListener
-            removeLocationEngineListener()
-        }else{
-            startManualNavigation()
-        }
-
+        enableLocationComponent(loadedStyle!!, RenderMode.COMPASS)
+        startNavTimestamp = System.currentTimeMillis()
+        showStatsLayout(true)
+        navigationState = NavigationState.IN_PROGRESS
+        addLocationEngineListener()
+        NavigationUtils.startTimer()
+        startingLocation = lastLocation!!
+        distance_container.visibility = View.GONE
+        instruction_view_treasure_hunt.visibility = View.VISIBLE
         navigationMap!!.resetCameraPositionWith(NavigationCamera.NAVIGATION_TRACKING_MODE_GPS)
-        val cameraUpdate = cameraOverheadUpdate()
-        if (cameraUpdate != null) {
-            val navUpdate = NavigationCameraUpdate(cameraUpdate)
-            navigationMap!!.retrieveCamera().update(navUpdate)
-        }
-    }*/
+
+        showLoadingGPS(false)
+
+        //audioService.playTTS(LanguageResource.languagesResources.treasureHuntDepartureReached, true, true)
+
+    }
 
     private fun leadUserToRunRoute(){
 
@@ -1485,178 +1734,68 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
 
         hasLeadBeenRequested = true
 
-        /*if(currentRoute?.hasStartingPoints!!){
+        /**if(currentRoute?.hasStartingPoints!!){
             closestRoutePoint = Point.fromLngLat(AppDataHolder.currentStartingPoint?.long!!, AppDataHolder.currentStartingPoint?.lat!!)
         }else{
             closestRoutePoint = MapUtils.getClosestPointFromUser(lastLocation!!, MapUtils.convertCoordinatesToPoints(currentRoute!!.arrayCoordinates!!))
-        }*/
+        }**/
 
-        closestRoutePoint = MapUtils.convertLocationToPoint(currentRoute!!.arrayPois[0].arrayCoordinates[0])
+        var firstPoiRiddle = arrayPoiRiddles.first()
+        closestRoutePoint = Point.fromLngLat(firstPoiRiddle.mainCoordinates.longitude, firstPoiRiddle.mainCoordinates.latitude)
 
         startingLocation = lastLocation
 
-        NavigationRoute.builder(this@NavigateToPOIActivity)
-                .accessToken(getString(R.string.access_token))
-                .origin(MapUtils.convertLocationToPoint(lastLocation!!))
-                .profile(currentRoute!!.methodLocomotion!!.getDirectionCriteria())
-                .destination(closestRoutePoint!!)
-                .language(ApplicationRunner.appLanguage.getLocale())
-                .voiceUnits(DirectionsCriteria.METRIC)
-                .build()
-                .getRoute(object : Callback<DirectionsResponse> {
-                    override fun onResponse(call: Call<DirectionsResponse>, response: Response<DirectionsResponse>) {
-                        if(response.isSuccessful){
-                            if(response.body()!!.routes().isNotEmpty()){
-                                navigation!!.stopNavigation()
-                                val computedRoute = response.body()?.routes()?.first()
-                                calculatedRouteLeadUserToRun = computedRoute
-                                navigation!!.startNavigation(computedRoute!!)
-                                startNavTimestamp = System.currentTimeMillis()
-                                initDistanceToTravel = computedRoute.distance()!!
-                                hasLeadStarted = true
-                                audioService.playTTS(LanguageResource.languagesResources.startNavigationToPOI, true, true)
-                                showStatsLayout(true)
-                                navigationState = NavigationState.IN_PROGRESS
+        NavigationRoute.builder(this@NavigationTreasureHuntActivity)
+            .accessToken(getString(R.string.access_token))
+            .origin(MapUtils.convertLocationToPoint(lastLocation!!))
+            .profile(currentRoute!!.methodLocomotion!!.getDirectionCriteria())
+            .destination(closestRoutePoint!!)
+            .language(ApplicationRunner.appLanguage.getLocale())
+            .voiceUnits(DirectionsCriteria.METRIC)
+            .build()
+            .getRoute(object : Callback<DirectionsResponse> {
+                override fun onResponse(call: Call<DirectionsResponse>, response: Response<DirectionsResponse>) {
+                    if(response.isSuccessful){
+                        if(response.body()!!.routes().isNotEmpty()){
+                            navigation!!.stopNavigation()
+                            val computedRoute = response.body()?.routes()?.first()
+                            calculatedRouteLeadUserToRun = computedRoute
+                            navigation!!.startNavigation(computedRoute!!)
+                            startNavTimestamp = System.currentTimeMillis()
+                            initDistanceToTravel = computedRoute.distance()!!
+                            hasLeadStarted = true
+                            if(!hasLeadBeenStarted) audioService.playTTS(LanguageResource.languagesResources.startNavigationToTreasureHunt, true, true)
+                            showStatsLayout(true)
+                            navigationState = NavigationState.IN_PROGRESS
 
-                                // Transition to navigation state
-                                mapState = MapState.NAVIGATION
-                                navigationMap!!.updateLocationLayerRenderMode(RenderMode.GPS)
+                            // Transition to navigation state
+                            mapState = MapState.NAVIGATION
+                            navigationMap!!.updateLocationLayerRenderMode(RenderMode.GPS)
 
-                                //cancelNavigationFab.show()
+                            // Show the InstructionView
+                            showLoadingGPS(false)
+                            navigationMap!!.resetCameraPositionWith(NavigationCamera.NAVIGATION_TRACKING_MODE_GPS)
 
-                                // Show the InstructionView
-                                //TransitionManager.beginDelayedTransition(navigationLayout)
-                                showLoadingGPS(false)
-                                instructionView.visibility = View.VISIBLE
-
-                                Handler().postDelayed({
-                                    navigationMap!!.resetCameraPositionWith(NavigationCamera.NAVIGATION_TRACKING_MODE_GPS)
-                                }, 1000)
-
-                                //adjustMapPaddingForNavigation()
-
-                                //navigationMap!!.resumeCamera(lastLocation!!)
-                                //navigation!!.stopNavigation()
-                            }else{
-                                Toast.makeText(this@NavigateToPOIActivity, getString(R.string.message_route_not_found), Toast.LENGTH_LONG).show()
-                            }
-
+                            Handler().postDelayed(Runnable {
+                                navigationMap!!.retrieveCamera().update(NavigationCameraUpdate(CameraUpdateFactory.zoomTo(17.0)))
+                            }, 1000)
+                            hasLeadBeenStarted = true
+                        }else{
+                            Toast.makeText(this@NavigationTreasureHuntActivity, getString(R.string.message_route_not_found), Toast.LENGTH_LONG).show()
                         }
-                    }
 
-                    override fun onFailure(call: Call<DirectionsResponse>, t: Throwable) {
-                        Log.e("onFailure", t.localizedMessage)
-                        hasLeadBeenRequested = false
                     }
-                })
-        //navigation!!.startRunNavigation(route!!)
+                }
+
+                override fun onFailure(call: Call<DirectionsResponse>, t: Throwable) {
+                    Log.e("onFailure", t.localizedMessage)
+                    hasLeadBeenRequested = false
+                }
+            })
 
         // Location updates will be received from ProgressChangeListener
         removeLocationEngineListener()
 
-        /**navigationMap!!.resetCameraPositionWith(NavigationCamera.NAVIGATION_TRACKING_MODE_GPS)
-        val cameraUpdate = cameraOverheadUpdate()
-        if (cameraUpdate != null) {
-        val navUpdate = NavigationCameraUpdate(cameraUpdate)
-        navigationMap!!.retrieveCamera().update(navUpdate)
-        }**/
-    }
-
-    private fun startManualNavigation(){
-        navigationMap!!.removeRoute()
-        navigationMap!!.clearMarkers()
-        navigation!!.stopNavigation()
-        hasRunStarted = true
-        loadedStyle!!.addLayer(
-                LineLayer("route-line-layer", "line-source").withProperties(
-                        iconAllowOverlap(true),
-                        iconIgnorePlacement(true),
-                        PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
-                        PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
-                        PropertyFactory.lineWidth(10f),
-                        PropertyFactory.lineColor(resources.getColor(R.color.colorPrimary))
-                ))
-        enableLocationComponent(loadedStyle!!)
-        startNavTimestamp = System.currentTimeMillis()
-        showStatsLayout(true)
-        navigationState = NavigationState.IN_PROGRESS
-        addLocationEngineListener()
-        NavigationUtils.startTimer()
-        initDistanceToTravel = currentRoute!!.length!!.toDouble()
-        startingLocation = lastLocation!!
-        initInstructionView()
-        showCustomInstructionView(true)
-    }
-
-    private fun fetchRoute(arrayCoordinates : List<Location>){
-
-        // Algorithm to keep as much coordinates as possible from route coordinates
-        // The more we keep, the better will be the computed route
-        var simplifiedArrayCoordinates = arrayCoordinates
-        var coordinatesSize = arrayCoordinates.size
-        var dividingFactor = 1
-        for(i in dividingFactor..20){
-            if(coordinatesSize/i < 100){
-                dividingFactor = i
-                break
-            }
-        }
-        // We check initial number of coordinates - mapbox accepts maximum 100 coordinates
-        // If we have less than 100 coordinates, we keep them all
-        if(arrayCoordinates.size > 100){
-            simplifiedArrayCoordinates = arrayCoordinates.filterIndexed { index, _ ->
-                index % dividingFactor == 0
-            }
-        }
-
-        /**
-         * We start a matching request to mapbox api in order to get a route that suits perfectly existing routes
-         */
-        if(AppConfiguration.Navigation.debugMode) displayDebugRouteOnMap(simplifiedArrayCoordinates)
-        MapboxMapMatching.builder()
-                .accessToken(getString(R.string.access_token))
-                .coordinates(MapUtils.convertCoordinatesToPoints(simplifiedArrayCoordinates))
-                .steps(true)
-                .waypointIndices(0, MapUtils.convertCoordinatesToPoints(simplifiedArrayCoordinates).size-1)
-                .voiceInstructions(true)
-                .bannerInstructions(true)
-                .language(ApplicationRunner.appLanguage.getLocale())
-                .profile(currentRoute!!.methodLocomotion!!.getDirectionCriteria())
-                .voiceUnits(DirectionsCriteria.METRIC) // TODO based on language
-                .overview(DirectionsCriteria.OVERVIEW_FULL)
-                .build()
-                .enqueueCall(object : Callback<MapMatchingResponse> {
-                    override fun onResponse(call: Call<MapMatchingResponse>, response: Response<MapMatchingResponse>) {
-                        if (response.isSuccessful) {
-                            try{
-                                val route = response.body()!!.matchings()!![0].toDirectionRoute()
-
-                                if(hasUserRequestedMockNavigation){
-                                    initializeLocationEngine(route)
-                                }
-
-                                calculatedRouteRun = route
-                                //handleRoute(route, false)
-                                audioService.playTTS(LanguageResource.languagesResources.runStarted, true, true)
-                                navigationMap!!.drawRoute(route)
-                                navigation!!.startNavigation(route)
-                                navigation!!.locationEngine = locationEngine!!
-                                startNavTimestamp = System.currentTimeMillis()
-                                currentRunSession?.totalDistance = route.distance()!!
-                                NavigationUtils.startTimer()
-                                showStatsLayout(true)
-                                navigationState = NavigationState.IN_PROGRESS
-                            }catch (exception: Exception){
-                                Toast.makeText(this@NavigateToPOIActivity, "Cannot generate route : $exception", Toast.LENGTH_SHORT).show()
-                            }
-
-                        }
-                    }
-
-                    override fun onFailure(call: Call<MapMatchingResponse>, throwable: Throwable) {
-
-                    }
-                })
     }
 
     private fun addEventToHistoryFile(type: String) {
@@ -1666,9 +1805,9 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
 
     private fun buildEngineRequest(): LocationEngineRequest {
         return LocationEngineRequest.Builder(UPDATE_INTERVAL_IN_MILLISECONDS)
-                .setPriority(LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
-                .setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS)
-                .build()
+            .setPriority(LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
+            .setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS)
+            .build()
     }
 
     private fun initBottomSheets(){
@@ -1678,16 +1817,16 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
                 // React to state change
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
-                        recenter_button.show()
+                        showButtons(true)
                     }
                     BottomSheetBehavior.STATE_EXPANDED -> {
-                        recenter_button.hide()
+                        showButtons(false)
                     }
                     BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-                        recenter_button.hide()
+                        showButtons(false)
                     }
                     BottomSheetBehavior.STATE_COLLAPSED -> {
-                        recenter_button.show()
+                        if(!isFragmentDisplayed) showButtons(true)
                     }
                     BottomSheetBehavior.STATE_DRAGGING -> {
                     }
@@ -1736,10 +1875,10 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
         play_poi_button.setOnClickListener {
             if(currentDisplayedPOI?.arrayMP3!!.isEmpty())
                 audioService.playTTS(SpeechAnnouncement.builder()
-                        .announcement(currentDisplayedPOI?.description)
-                        .build(), false)
+                    .announcement(currentDisplayedPOI?.description)
+                    .build(), false)
             else
-                audioService.playDescriptionMP3(currentDisplayedPOI!!, this@NavigateToPOIActivity)
+                audioService.playDescriptionMP3(currentDisplayedPOI!!, this@NavigationTreasureHuntActivity)
 
             play_poi_button.visibility = View.GONE
             stop_poi_button.visibility = View.VISIBLE
@@ -1764,10 +1903,14 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
     /**
      * Calls bottom sheet to be displayed
      */
-    private fun displayBottomSheetFor(poi: POI){
+    private fun displayBottomSheetFor(poi: POI, hideable: Boolean){
+
+        bottomSheetPoiBehavior?.isHideable = hideable
+        next_step_container.isVisible = !hideable
+
         AppDataHolder.currentPOI = poi
         bindBottomSheetWith(poi)
-        recenter_button.hide()
+        showButtons(false)
         bottomSheetPoiBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
 
         if(audioService.isPOIBeingRead(poi)){
@@ -1783,52 +1926,6 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
             mp3_fillprogresslayout.visibility = View.GONE
             mp3_fillprogresslayout_static.visibility = View.VISIBLE
         }
-
-        var durationBeforeClosing = 30000L
-        if(poi.isMP3Activated!!){
-            durationBeforeClosing = 60000L
-        }
-
-        Handler().postDelayed({
-            runOnUiThread {
-                bottomSheetPoiBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
-            }
-        }, durationBeforeClosing)
-    }
-
-    private fun displayBannerFor(poi: POI){
-        val slide_down = AnimationUtils.loadAnimation(
-                applicationContext,
-                R.anim.slide_down_gooddeal
-        )
-        val display = windowManager.defaultDisplay
-        val size = android.graphics.Point()
-        display.getSize(size)
-        val heightDisplay: Float = size.y - coordinator_banner_poi.y
-        runOnUiThread {
-            coordinator_banner_poi.visibility = View.VISIBLE
-            coordinator_banner_poi.alpha = 0.0f
-            if(poi.imageURL != null){
-                Glide.with(this@NavigateToPOIActivity).load(poi.imageURL).into(findViewById(R.id.image_banner_poi))
-                (findViewById<ImageView>(R.id.image_banner_poi)).visibility = View.VISIBLE
-            }else{
-                (findViewById<ImageView>(R.id.image_banner_poi)).visibility = View.GONE
-            }
-            (findViewById<TextView>(R.id.title_banner_poi)).text = poi.name
-            (findViewById<TextView>(R.id.description_banner_poi)).text = getString(R.string.text_know_more_about_poi)
-            (findViewById<FloatingActionButton>(R.id.link_gooddeal)).setOnClickListener {
-                IntentUtils.startWebIntent(this@NavigateToPOIActivity, poi.urlWebView, false)
-                //StatisticManager.poiClicked(poi)
-            }
-        }
-        coordinator_banner_poi.animate()
-                .translationY(resources.getDimension(R.dimen.instruction_layout_height))
-                .alpha(1.0f)
-                .setListener(null)
-        timeStampStartGooddealAnimation = System.currentTimeMillis()
-        isGoodDealDisplayed = true
-        idGoodDealDisplayed = poi.id
-        Timber.i("Showing gooddeal")
     }
 
     private fun checkIfBannerIsDisplayed(){
@@ -1836,14 +1933,14 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
         if (System.currentTimeMillis() - timeStampStartGooddealAnimation > LENGTH_ANIMATION_GOODDEAL_MS && isGoodDealDisplayed) { // Hiding a gooddeal on screen
             runOnUiThread {
                 coordinator_banner_poi.animate()
-                        .translationY(0f)
-                        .alpha(0.0f)
-                        .setListener(object : AnimatorListenerAdapter() {
-                            override fun onAnimationEnd(animation: Animator) {
-                                super.onAnimationEnd(animation)
-                                coordinator_banner_poi.setVisibility(View.INVISIBLE)
-                            }
-                        })
+                    .translationY(0f)
+                    .alpha(0.0f)
+                    .setListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            super.onAnimationEnd(animation)
+                            coordinator_banner_poi.visibility = View.INVISIBLE
+                        }
+                    })
                 isGoodDealDisplayed = false
                 Timber.i("Hiding gooddeal")
             }
@@ -1861,10 +1958,10 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
         title_poi_textview.text = poi.name
         if(poi.imageURL != null && poi.imageURL != ""){
             image_poi_imageview.visibility = View.VISIBLE
-            Glide.with(this@NavigateToPOIActivity)
-                    .load(poi.imageURL)
-                    .placeholder(R.drawable.placeholder_image_loading)
-                    .into(image_poi_imageview)
+            Glide.with(this@NavigationTreasureHuntActivity)
+                .load(poi.imageURL)
+                .placeholder(R.drawable.placeholder_image_loading)
+                .into(image_poi_imageview)
         }else{
             image_poi_imageview.visibility = View.GONE
         }
@@ -1907,10 +2004,10 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
      * LocationEngine callback
      */
 
-    private class ComponentActivityLocationCallback internal constructor(activity: NavigateToPOIActivity) :
-            LocationEngineCallback<LocationEngineResult> {
+    private class ComponentActivityLocationCallback internal constructor(activity: NavigationTreasureHuntActivity) :
+        LocationEngineCallback<LocationEngineResult> {
 
-        private val activityWeakReference: WeakReference<NavigateToPOIActivity>
+        private val activityWeakReference: WeakReference<NavigationTreasureHuntActivity>
 
         init {
             this.activityWeakReference = WeakReference(activity)
@@ -1938,10 +2035,9 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
         if(!hasRouteFinished){
             hasRouteFinished = true
             // Hide the InstructionView
-            instructionView.visibility = View.INVISIBLE
             mapState = MapState.INFO
 
-            if(hasRunStarted)
+            if(hasTreasureHuntStarted)
                 saveStatistics()
             if((NavigationUtils.currentStopWatchTimer != null) && (NavigationUtils.currentStopWatchTimer!!.isPaused || NavigationUtils.currentStopWatchTimer!!.isStarted))
                 NavigationUtils.stopTimer()
@@ -1949,11 +2045,12 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
             bottomSheetEndBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
             bottomSheetEndBehavior?.isHideable = false
             bindResumeBottomSheet()
+            instruction_view_treasure_hunt.visibility = View.GONE
 
             if(completed)
-                audioService.playTTS(LanguageResource.languagesResources.congratulationsFinishRoute, true, true)
+                audioService.playMP3(AppPropertiesConfiguration.arrayAudioTreasureHuntEnd[ApplicationRunner.appLanguage]!!)
             else
-                audioService.playTTS(LanguageResource.languagesResources.finishNavigation, true, true)
+                audioService.playTTS(LanguageResource.languagesResources.finishTreasureHunt, true, true)
         }
     }
 
@@ -1961,12 +2058,12 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
      * Binding final bottom sheet when route is finished
      */
     private fun bindResumeBottomSheet(){
-        //val stars = rating.progressDrawable as LayerDrawable
-        //stars.getDrawable(2).setColorFilter(resources.getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP)
+        val stars = rating.progressDrawable as LayerDrawable
+        stars.getDrawable(2).setColorFilter(resources.getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP)
 
-        total_distance_travelled_textview.text = MetricsUtils.displayDistanceFormatted(totalDistanceTravelled)
+        right_answer_riddles.text = String.format(getString(R.string.text_number_good_riddles), numberRightAnswerRiddles, arrayPoiRiddles.size)
         total_time_textview.text = MetricsUtils.displayMillisecondsToSecondsFormatted(totalTimeTravelled)
-        average_speed_textview.text = MetricsUtils.displaySpeedFormatted(averageSpeed)
+        //average_speed_textview.text = MetricsUtils.displaySpeedFormatted(averageSpeed)
 
         rating.onRatingBarChangeListener = object: RatingBar.OnRatingBarChangeListener{
             override fun onRatingChanged(p0: RatingBar?, p1: Float, p2: Boolean) {
@@ -2035,7 +2132,7 @@ class NavigateToPOIActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     override fun onBackPressed() {
-        if(!hasRunStarted)
+        if(!hasRunStarted || BuildConfig.DEBUG)
             super.onBackPressed()
     }
 }

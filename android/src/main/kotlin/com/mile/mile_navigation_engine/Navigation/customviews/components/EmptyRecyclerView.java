@@ -1,4 +1,4 @@
-package com.mile.mile_navigation_engine.customviews.components;
+package com.mile.mile_navigation_engine.Navigation.customviews.components;
 
 import android.content.Context;
 import android.util.AttributeSet;

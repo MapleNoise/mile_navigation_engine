@@ -33,6 +33,12 @@ class LanguageResource(languageCode: LanguageCode?) {
     var offRoute = ""
     var congratulationsFinishRoute = ""
     var finishNavigation = ""
+    var startNavigationToTreasureHunt = ""
+    var treasureHuntDepartureReached = ""
+    var pauseTreasureHunt = ""
+    var resumeTreasureHunt = ""
+    var congratulationsFinishTreasureHunt = ""
+    var finishTreasureHunt = ""
 
     fun getuTurn(): String {
         return uTurn
@@ -53,9 +59,12 @@ class LanguageResource(languageCode: LanguageCode?) {
                 startNavigationToPOI = "Nous allons maintenant vous guider à pied vers votre point d'intérè."
                 startNavigationToRoute =
                         "Nous allons maintenant vous guider à pied vers le point le plu proche du parcours."
+                startNavigationToTreasureHunt = "Nous allons maintenant vous guider au départ du jeu de piste."
                 wrongWay = "Vous courez dans le mauvais sens, faite demi tour."
                 resumeNavigation = "Reprise du parcours"
                 pauseNavigation = "Parcours en pause"
+                resumeTreasureHunt = "Reprise du jeu de piste"
+                pauseTreasureHunt = "Jeu de piste en pause"
                 right = "À votre droite, "
                 left = "À votre gauche, "
                 front = "Face à vous, "
@@ -83,6 +92,9 @@ class LanguageResource(languageCode: LanguageCode?) {
                         "Félicitations, vous avez terminé le parcours. Nous espérons que vous avez apprécié votre expérience."
                 finishNavigation =
                         "Parcours terminé. Nous espérons que vous avez apprécié votre expérience."
+                finishTreasureHunt = "Jeu de piste terminé. Nous espérons que vous avez apprécié votre expérience avec Sur les chemins de Miramas ."
+                treasureHuntDepartureReached = "Vous êtes arrivés à la première étape du jeu de piste, que la chasse commence !"
+                congratulationsFinishTreasureHunt = "Félicitations, vous avez terminé le jeu de piste!"
             }
             LanguageCode.EN -> {
                 endRoute =
@@ -122,6 +134,12 @@ class LanguageResource(languageCode: LanguageCode?) {
                         "Congratulations, you have completed the route. We hope you have enjoyed your experience."
                 finishNavigation =
                         "Route ended. We hope you have enjoyed your experience."
+                startNavigationToTreasureHunt = "We will guide you to the beginning of the treasure hunt."
+                resumeTreasureHunt = "Treasure hunt resumed"
+                pauseTreasureHunt = "Treasure hunt paused"
+                finishTreasureHunt = "Treasure hunt ended. We hope you have enjoyed your experience with Sur les chemins de Miramas."
+                treasureHuntDepartureReached = "Vous êtes arrivés à la première étape du jeu de piste, que la chasse commence !"
+                congratulationsFinishTreasureHunt = "Congratulations, you have finished this treasure hunt!"
             }
         }
     }

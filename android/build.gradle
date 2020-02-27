@@ -122,6 +122,12 @@ dependencies {
 
     // Managing preferences easily
     implementation 'com.pixplicity.easyprefs:library:1.9.0'
+
+    // Managing permissions easily
+    implementation 'com.karumi:dexter:6.0.1'
+
+    // QRCode reader
+    implementation 'com.budiyev.android:code-scanner:2.1.0'
 }
 
 apply plugin: 'kotlin-android-extensions'

@@ -1,6 +1,6 @@
 name: mile_navigation_engine
 description: Native custom Mapbox navigation for Mile projects.
-version: 0.0.6
+version: 0.0.7
 #author: "Lionel Malloggi <lionel.malloggi.mile@gmail.com>"
 repository: "https://github.com/MapleNoise/mile_navigation_engine.git"
 homepage: "https://www.mile.eu.com"

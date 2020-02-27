@@ -26,6 +26,7 @@ data class RouteDataClass(
         val imageURL : String?,
         val listMedias: List<Media>?,
         val averageDuration : Long?,
+        var center : RouteCenter?,
         var methodLocomotion : Locomotion?,
         val globalAQI : Long?,
         val allergensAverage : Long?,
@@ -115,4 +116,11 @@ data class RouteDataClass(
                 return ApplicationRunner.instance.getString(R.string.label_good)
         }
     }
+}
+
+data class RouteCenter(
+        val center: Location = Location("provider"),
+        val radius: Long = 0L
+){
+
 }

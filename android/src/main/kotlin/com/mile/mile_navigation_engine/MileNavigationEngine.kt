@@ -7,22 +7,13 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
-import android.os.Bundle
-import androidx.core.content.ContextCompat.startActivity
-import com.google.android.gms.location.R
 import com.google.gson.Gson
-import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.mapboxsdk.Mapbox
-import com.mapbox.services.android.navigation.ui.v5.NavigationViewOptions
-import com.mapbox.services.android.navigation.v5.routeprogress.RouteProgressState
 import com.mile.mile_navigation_engine.activities.navigation.NavigateToPOIActivity
 import com.mile.mile_navigation_engine.activities.navigation.NavigationActivity
-import com.mile.mile_navigation_engine.model.LanguageCode
-import com.mile.mile_navigation_engine.model.POI
-import com.mile.mile_navigation_engine.model.RouteDataClass
-import com.mile.mile_navigation_engine.model.StartingPoint
+import com.mile.mile_navigation_engine.activities.navigation.NavigationTreasureHuntActivity
+import com.mile.mile_navigation_engine.model.*
 import com.mile.mile_navigation_engine.utils.AppDataHolder
-import io.flutter.app.FlutterApplication
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -93,6 +84,8 @@ class MileNavigationEngine : MethodChannel.MethodCallHandler, EventChannel.Strea
             intent = Intent(_activity, NavigationActivity::class.java)
         } else if(mode == NavigationMode.NAVIGATE_TO_POI) {
             intent = Intent(_activity, NavigateToPOIActivity::class.java)
+        } else if(mode == NavigationMode.TREASURE_HUNT) {
+            intent = Intent(_activity, NavigationTreasureHuntActivity::class.java)
         }
 
         _activity.startActivity(intent)
@@ -134,6 +127,8 @@ class MileNavigationEngine : MethodChannel.MethodCallHandler, EventChannel.Strea
             route.arrayCoordinates = locations
             route.previewCoordinates = locations //Maybe redo
             AppDataHolder.currentStartingPoint = StartingPoint("", locations.get(0).latitude, locations.get(0).longitude, 0, 0) //Maybe redo
+        } else {
+            route.arrayCoordinates = ArrayList()
         }
 
         if(routeJSONObj.has("arrayDescription")){
@@ -158,6 +153,15 @@ class MileNavigationEngine : MethodChannel.MethodCallHandler, EventChannel.Strea
                 }
             }
             route.arrayName = arrayName
+        }
+
+        if(routeJSONObj.has("routeCenter")){
+            val coor = routeJSONObj.get("routeCenter") as JSONObject
+            val location = Location("")
+            location.latitude = coor.get("latitude") as Double
+            location.longitude = coor.get("longitude") as Double
+            var rCenter = RouteCenter(location, (routeJSONObj.get("routeRadius") as Integer).toLong());
+            route.center = rCenter;
         }
 
         if(routeJSONObj.has("arrayPois")){

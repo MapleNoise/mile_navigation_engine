@@ -116,5 +116,29 @@
     <string name="message_gps_network_not_enabled">Vous devez activer votre localisation avant de pouvoir démarrer la navigation.</string>
     <string name="message_module_non_supported">Module non supporté</string>
     <string name="policy_url">https://app-balades.saint-etienne.fr/mentions-legales.html</string>
+    <string name="text_find_area">Trouvez la zone secrète pour l\'étape %1$d</string>
+    <string name="text_find_qrcode">Recherchez le QRCode pour l\'étape %1$d</string>
+    <string name="text_number_good_riddles">%1$d/%2$d</string>
+    <string name="title_instruction_riddle_index">Etape %1$d</string>
+    <string name="title_treasure_hunt_resume">Comment était la chasse au trésor?</string>
+    <string name="text_no_instruction">Pas d\'instructions pour le moment !</string>
+    <string name="text_introduction_treasure_hunt">Bienvenue dans le jeu de piste « Au cœur du village médiéval » ! 13 énigmes ont été soigneusement dissimulées dans le village. Saurez-vous les résoudre ? Suivez nos instructions pour vous rendre d’un lieu à un autre, et scannez les QR codes situés dans chaque zone d’énigme. C’est parti !</string>
+    <string name="text_lets_go">C\'est parti !</string>
+    <string name="action_next_step">Aller à la prochaine étape</string>
+    <string name="labem_see_instructions">Voir mes instructions</string>
+    <string name="text_finish_treasure_hunt">Félicitation! Tu as terminé la chasse au trésor ! Voici votre résultat...</string>
+    <string name="label_instruction">Instruction</string>
+    <string name="text_advice_scan_qr_code">Scannez le QRCode sans bouger. (touchez l\'écran pour mettre au point)</string>
+    <string name="label_continue">Continuer</string>
+    <string name="text_poi_riddle_found">Vous avez atteint une nouvelle zone secrète. Trouvez le QR code et scannez-le afin d’accéder à l’énigme.</string>
+    <string name="text_remind_answer">La réponse est :</string>
+    <string name="text_success_riddle">Félicitations ! Vous avez résolu l’énigme !</string>
+    <string name="text_fail_riddle">"Dommage, ce n’est pas la bonne réponse. Vous réussirez la prochaine fois, c’est sûr !  "</string>
+    <string name="label_confirm">Valider</string>
+    <string name="label_answer">Réponse</string>
+    <string name="label_see_hint">Voir l\'indice</string>
+    <string name="label_hint">Indice</string>
+    <string name="label_good_answer">Bonne réponse</string>
+    <string name="title_riddle_indexed">Enigme %1$d/%2$s</string>
 
 </resources>

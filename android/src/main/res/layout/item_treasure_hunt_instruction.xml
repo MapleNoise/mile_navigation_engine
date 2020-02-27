@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="start|center"
+    android:padding="@dimen/spacing_layout_medium">
+    
+    <TextView
+        android:id="@+id/index_instruction"
+        style="@style/Text.SubTitle"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textAlignment="textStart"
+        android:text="1"/>
+    
+    <TextView
+        android:id="@+id/text_instruction"
+        style="@style/Text.Title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/lorem_medium"/>
+
+</LinearLayout>

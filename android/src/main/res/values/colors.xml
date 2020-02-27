@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">@android:color/transparent</color>
-    <color name="colorPrimaryDark">#2b6973</color>
+    <color name="colorPrimaryDark">#FFFFFF</color>
     <color name="colorSecondary">#9c4777</color>
     <color name="colorBlock">#232937</color>
     <color name="colorThirdGrey">#5f6c78</color>
@@ -22,6 +22,9 @@
 
     <color name="color_medium">#e67e22</color>
     <color name="color_bad">#c0392b</color>
+
+    <color name="route_open">#27ae60</color>
+    <color name="route_closed">#c0392b</color>
     
     <!-- SHIMMER COLORS -->
     <color name="color_shimmer_light">#B1ADB1</color>

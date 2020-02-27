@@ -196,7 +196,32 @@
     <string name="message_module_non_supported">Module non supported</string>
     <string name="text_swipe_before_after">Décalez le bouton vers la gauche ou la droite pour ... [Texte à définir]</string>
     <string name="ar_model_progress">Tentative d\'affichage, merci de patienter.</string>
-    
+
+    <string name="text_find_qrcode">Find QRCode for step %1$d</string>
+    <string name="text_find_area">Find secret area for step %1$d</string>
+    <string name="text_number_good_riddles">%1$d/%2$d</string>
+    <string name="title_instruction_riddle_index">Step %1$d</string>
+    <string name="title_treasure_hunt_resume">How was your treasure hunt?</string>
+    <string name="text_no_instruction">No instruction at the moment, keep playing!</string>
+    <string name="text_introduction_treasure_hunt">Welcome to our treasure hunt through the medieval centre. 13 mystery questions have been carefully dispersed throughout the village. Will you be able to answer them? Follow our instructions to get from one place to another and scan the QR codes located in each mystery zone. Let’s do this!</string>
+    <string name="text_lets_go">Let\'s go!</string>
+    <string name="action_next_step">Go to next step</string>
+    <string name="labem_see_instructions">See all my instructions</string>
+    <string name="text_finish_treasure_hunt">Congratulations! You have finished the treasure hunt! Let’s check out your results...</string>
+    <string name="label_instruction">Instruction</string>
+    <string name="text_advice_scan_qr_code">Scan QRCode without moving. (tap the screen to focus)</string>
+    <string name="text_poi_riddle_found">You have reached a new secret zone. Find the QR code and scan it for access to the mystery question.</string>
+    <string name="label_continue">Continue</string>
+    <string name="text_fail_riddle">Sorry, that is not the right answer. Better luck next time, you got this!</string>
+    <string name="text_remind_answer">The answer is:</string>
+    <string name="text_success_riddle">Congratulations! You have answered correctly!</string>
+    <string name="label_confirm">Confirm</string>
+    <string name="label_answer">Answer</string>
+    <string name="label_hint">Hint</string>
+    <string name="label_see_hint">See hint</string>
+    <string name="label_good_answer">Good answer</string>
+    <string name="title_riddle_indexed">Riddle %1$d/%2$s</string>
+
     <string-array name="CATEGORIES_REPORT_PROBLEM">
         <item>Select a category</item>
         <item>GPS location</item>

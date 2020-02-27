@@ -297,6 +297,20 @@ public class AudioService extends UtteranceProgressListener implements AudioMana
         });
     }
 
+    public void playMP3(int resourceId){
+        speechPlayer.setMuted(true);
+        try{
+            if(mPlayer != null && mPlayer.isPlaying()){
+                mPlayer.stop();
+                mPlayer.release();
+            }
+            mPlayer = MediaPlayer.create(this.context, resourceId);
+            mPlayer.start();
+        }catch(Exception e){
+            Timber.e(e.getLocalizedMessage());
+        }
+    }
+
     public boolean isPOIBeingRead(POI poi){
         if(currentPOI != null){
             return poi.getId().equals(currentPOI.getId());

@@ -2,6 +2,7 @@ package com.mile.mile_navigation_engine.model
 
 import android.location.Location
 import com.mile.mile_navigation_engine.Navigation.ApplicationRunner
+import com.mile.mile_navigation_engine.Navigation.model.Riddle
 import com.mile.mile_navigation_engine.R
 
 data class POI(
@@ -22,7 +23,7 @@ data class POI(
         val idDirection : Long?,
         val isAutoDirectionAcivated : Boolean,
         val status : Long,
-
+        val riddle: Riddle,
         val urlWebView : String,
         val modules : List<Module>
 ){
