@@ -1,4 +1,6 @@
 PODS:
+  - android_intent (0.0.1):
+    - Flutter
   - Animo (1.4.0)
   - FloatingPanel (1.7.2)
   - Flutter (1.0.0)
@@ -28,6 +30,7 @@ PODS:
   - Turf (0.3.0)
 
 DEPENDENCIES:
+  - android_intent (from `.symlinks/plugins/android_intent/ios`)
   - Flutter (from `Flutter`)
   - mile_navigation_engine (from `.symlinks/plugins/mile_navigation_engine/ios`)
 
@@ -47,12 +50,15 @@ SPEC REPOS:
     - Turf
 
 EXTERNAL SOURCES:
+  android_intent:
+    :path: ".symlinks/plugins/android_intent/ios"
   Flutter:
     :path: Flutter
   mile_navigation_engine:
     :path: ".symlinks/plugins/mile_navigation_engine/ios"
 
 SPEC CHECKSUMS:
+  android_intent: f144b3783d533cc5bc2cd04cdbd1dc2b6950bd69
   Animo: 02f79a32ebcb2889e47f308596ea53335c5a04c9
   FloatingPanel: b275a35d0a09be4bd37025e710a6a1d063bfc161
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
@@ -63,11 +69,11 @@ SPEC CHECKSUMS:
   MapboxNavigation: 244610a48b25b757891f38d3f9fe48cbedfa76b9
   MapboxNavigationNative: 11dc22140f4698d3f26989f2b6379dc81ef0d4c1
   MapboxSpeech: 59b3984d3f433a443d24acf53097f918c5cc70f9
-  mile_navigation_engine: 890c2c6be12ab40e370a82736267d747f1be093a
+  mile_navigation_engine: 12f6da865242bd0bc4f876dc7b536e0ddc2942b1
   Polyline: 0e9890790292741c8186201a536b6bb6a78d02dd
   Solar: 2dc6e7cc39186cb0c8228fa08df76fb50c7d8f24
   Turf: c6bdf62d6a70c647874f295dd1cf4eefc0c3e9e6
 
 PODFILE CHECKSUM: 1b66dae606f75376c5f2135a8290850eeb09ae83
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.0.beta.3

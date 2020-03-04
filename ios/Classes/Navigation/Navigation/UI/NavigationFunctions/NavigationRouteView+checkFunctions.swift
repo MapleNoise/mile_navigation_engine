@@ -89,17 +89,12 @@ extension NavigationRouteView
         //We use actualLocation to check if user is in a POI zone, and previousLocation is used to create a path to compare if POI is on the right, left ....
         if actualLocation.horizontalAccuracy < 50 { //We add 5 seconds to POI detector in order to let the TTS to annouce the user arrived on starting point without
             NavigationRouteView.mutedZone = checkIfInDirectionalZone(object!.directionals, actualLocation)
-            for (index,directional) in object!.directionals.enumerated()
-                
-            {
-                for (_, location ) in directional.getLocations().enumerated()
-                {
+            for (index,directional) in object!.directionals.enumerated() {
+                for (_, location ) in directional.getLocations().enumerated() {
                     let delta: CLLocationDistance = actualLocation.distance(from: location)
                     if delta < Double(directional.range) {
-                        if (object!.directionals![index].status == .notPlayed && object!.directionals![index].isBloquant == false)
-                        {
-                            
-                            
+                        if (object!.directionals![index].status == .notPlayed && object!.directionals![index].isBloquant == false) {
+
                             print(directional.description)
                             object!.directionals![index].status = .isPlaying
                             
@@ -112,17 +107,14 @@ extension NavigationRouteView
                             self.instructionsBannerView.primaryLabel.text = directional.description
                             playSynthesizerDirectionnal(description: directional.description)
                             
-                        }
-                        else if (object!.directionals![index].status == .notPlayed && object!.directionals![index].isBloquant == false)
-                        {
+                        } else if (object!.directionals![index].status == .notPlayed && object!.directionals![index].isBloquant == false) {
                             
                         }
                     }
                 }
             }
             for (index,poi) in object!.pois.enumerated() {
-                for (location ) in poi.getLocations()
-                {
+                for (location ) in poi.getLocations() {
                     let delta: CLLocationDistance = actualLocation.distance(from: location)
                     if delta < Double(poi.range) {
                         if (object!.pois![index].status == .notPlayed)
@@ -132,7 +124,9 @@ extension NavigationRouteView
                             //  let speechSynthesizer = SpeechSynthesizer.shared
                             object!.pois![index].status = .isPlaying
                             AudioServicesPlayAlertSoundWithCompletion(SystemSoundID(kSystemSoundID_Vibrate)) { }
-                            
+
+                            AppDataHolder.eventActivePOI!("{\"result\" : true}");
+
                             if let player = self.voiceController?.audioPlayer
                             {
                                 if player.isPlaying

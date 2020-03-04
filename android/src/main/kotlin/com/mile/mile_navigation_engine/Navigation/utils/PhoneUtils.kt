@@ -16,14 +16,14 @@ class PhoneUtils{
     companion object{
 
         fun triggerVibration(durationInMs: Long){
-            var v = AppDataHolder.applicationInstance?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            /*var v = AppDataHolder.applicationInstance?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             // Vibrate for 500 milliseconds
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 v.vibrate(VibrationEffect.createOneShot(durationInMs, VibrationEffect.DEFAULT_AMPLITUDE))
             } else {
                 //deprecated in API 26
                 v.vibrate(durationInMs)
-            }
+            }*/
         }
 
         fun checkIfLocationIsActivated(passedContext: Context): Boolean{

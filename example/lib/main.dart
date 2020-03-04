@@ -1,11 +1,27 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:android_intent/android_intent.dart';
+import 'package:flutter/services.dart';
 
 import 'package:mile_navigation_engine/mile_navigation_lib.dart';
+import 'package:mile_navigation_engine_example/about.dart';
+import 'package:mile_navigation_engine_example/navigation.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(
+      MaterialApp(
+        initialRoute: MyApp.routeName,
+        routes: {
+          MyApp.routeName : (context) => MyApp(),
+          About.routeName : (context) => About(),
+        },
+      )
+  );
+}
 
 class MyApp extends StatefulWidget {
+  static String routeName = "/";
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -14,9 +30,30 @@ class _MyAppState extends State<MyApp> {
 
   MileNavigationEngine _navigationEngine;
 
+  //For iOS ONLY
+  static const platform = const MethodChannel('com.mile.mile_navigation_engine_example/view_controller');
+
   @override
   void initState() {
     super.initState();
+  }
+
+  void goAndroidFlutterFromNavigation() async {
+    AndroidIntent intent = AndroidIntent(
+      action: 'android.intent.action.RUN',
+      package: 'com.mile.mile_navigation_engine_example',
+      componentName: 'com.mile.mile_navigation_engine_example.FlutterViewActivity',
+      arguments: {'route': About.routeName},
+    );
+    await intent.launch();
+  }
+
+  Future<void> goIOSFlutterFromNavigation() async {
+    try {
+      await platform.invokeMethod('display_view_controller');
+    } on PlatformException catch (e) {
+      print(e.toString());
+    }
   }
 
   @override
@@ -24,12 +61,20 @@ class _MyAppState extends State<MyApp> {
 
     _navigationEngine = MileNavigationEngine(
         onNavigationFinished: (arrived) {
-          print("ok?");
+          print("onNavigationFinished");
+        },
+        onActivePOI: (result) {
+          if(Platform.isAndroid) {
+            print("Android POI is playing");
+            //goAndroidFlutterFromNavigation();
+          } else {
+            print("iOS POI is playing");
+            goIOSFlutterFromNavigation();
+          }
         },
     );
 
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           title: const Text('Mile Navigation Plugin'),
         ),
@@ -115,9 +160,32 @@ class _MyAppState extends State<MyApp> {
                   ),
                 )
             ),
+
+            Container(height: 40,),
+            InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                    MaterialPageRoute(
+                      builder: (context) => Navigation(),
+                    ),
+                  );
+                },
+                child: Container(
+                  height: 36,
+                  width: 200,
+                  color: Colors.blue,
+                  child: Center(
+                    child: Text(
+                      "Go To navigation widget",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                )
+            ),
           ],
         ),
-      ),
     );
   }
 }

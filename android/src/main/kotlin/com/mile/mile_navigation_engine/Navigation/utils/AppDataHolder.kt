@@ -25,6 +25,7 @@ class AppDataHolder {
         var gpsColor : String? = "#000000"
 
         var _eventSink: EventChannel.EventSink? = null
+        var _eventActivePOI: EventChannel.EventSink? = null
     }
 
 }

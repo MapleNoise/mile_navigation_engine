@@ -10,4 +10,5 @@ import Foundation
 class AppDataHolder {
     static var flutterNavigationMode: String = ""
     static var eventSink: FlutterEventSink? = nil
+    static var eventActivePOI: FlutterEventSink? = nil
 }

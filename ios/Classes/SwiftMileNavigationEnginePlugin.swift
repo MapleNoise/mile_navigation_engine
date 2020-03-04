@@ -14,10 +14,12 @@ public class SwiftMileNavigationEnginePlugin: NSObject, FlutterPlugin, FlutterSt
     public static func register(with registrar: FlutterPluginRegistrar) {
       let channel = FlutterMethodChannel(name: "flutter_mapbox_navigation", binaryMessenger: registrar.messenger())
       let eventChannel = FlutterEventChannel(name: "flutter_mapbox_navigation/arrival", binaryMessenger: registrar.messenger())
+      let activePOIChannel = FlutterEventChannel(name: "flutter_mapbox_navigation/active_poi", binaryMessenger: registrar.messenger())
       let instance = SwiftMileNavigationEnginePlugin()
       registrar.addMethodCallDelegate(instance, channel: channel)
 
-        eventChannel.setStreamHandler(instance as? FlutterStreamHandler & NSObjectProtocol)
+      eventChannel.setStreamHandler(instance as? FlutterStreamHandler & NSObjectProtocol)
+      activePOIChannel.setStreamHandler(instance as? FlutterStreamHandler & NSObjectProtocol)
 
       let viewFactory = FlutterMapboxNavigationViewFactory()
       registrar.register(viewFactory, withId: "FlutterMapboxNavigationView")
@@ -117,7 +119,6 @@ public class SwiftMileNavigationEnginePlugin: NSObject, FlutterPlugin, FlutterSt
             if(AppDataHolder.eventSink != nil) {
                 let arrived = progress.isFinalLeg && progress.currentLegProgress.userHasArrivedAtWaypoint
                 AppDataHolder.eventSink!(arrived)
-
             }
         }
 
@@ -126,12 +127,24 @@ public class SwiftMileNavigationEnginePlugin: NSObject, FlutterPlugin, FlutterSt
       }
 
       public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
-          AppDataHolder.eventSink = events
+        if let args = arguments as! [String]? {
+            if(args[0] == "finish_navigation") {
+                AppDataHolder.eventSink = events;
+            } else if(args[0] == "active_poi") {
+                AppDataHolder.eventActivePOI = events;
+            }
+        }
           return nil
       }
 
       public func onCancel(withArguments arguments: Any?) -> FlutterError? {
-          AppDataHolder.eventSink = nil
+        /*if let args = arguments as! [String]? {
+            if(args[0] == "finish_navigation") {
+                AppDataHolder.eventSink = nil
+            } else if(args[0] == "active_poi") {
+                AppDataHolder.eventActivePOI = nil
+            }
+        }*/
           return nil
       }
   }
