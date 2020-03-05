@@ -27,7 +27,7 @@ public class MileNavigationEngineController implements MethodChannel.MethodCallH
         this.context = context;
         this.activityState = activityState;
         this.registrar = registrar;
-        methodChannel = new MethodChannel(registrar.messenger(), "flutter_mapbox_navigation" + id);
+        methodChannel = new MethodChannel(registrar.messenger(), "flutter_mapbox_navigation_" + id);
         methodChannel.setMethodCallHandler(this);
         this.registrarActivityHashCode = registrar.activity().hashCode();
     }

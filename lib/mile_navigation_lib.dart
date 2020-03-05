@@ -6,5 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 part 'mile_navigation_engine.dart';
+part 'mile_navigation_controller.dart';
 part 'navigation_mode.dart';
 part 'RouteFinished.dart';

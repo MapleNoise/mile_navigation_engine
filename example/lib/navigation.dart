@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mile_navigation_engine/mile_navigation_lib.dart';
 
+import 'about.dart';
+
 class Navigation extends StatefulWidget {
 
   static const routeName = '/navigation';
@@ -42,6 +44,15 @@ class _NavigationState extends State<Navigation> {
             gpsColor: "#ff000000",
             accessToken: "pk.eyJ1IjoibWlsZS1kZXYiLCJhIjoiY2s0OGJkNWEyMDB5ZTNna2Z5b2c2YTF3MCJ9.D5Ebdy0_ADSTQPTH4GCc9w",
             mode: NavigationMode.NAVIGATE_IN_ROUTE,
+            onNavigationFinished: (isFinished) {
+              print("onNavigationFinished");
+            },
+            onActivePOI: (poi) {
+              print("onActivePOI");
+            },
+            onMapCreated: (controller) {
+              print("onMapCreated");
+            },
           ),
         ),
     );

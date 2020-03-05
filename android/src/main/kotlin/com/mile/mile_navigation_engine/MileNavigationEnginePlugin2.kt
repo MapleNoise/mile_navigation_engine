@@ -6,11 +6,13 @@ import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
+import com.mile.mile_navigation_engine.utils.AppDataHolder
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
+import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.util.concurrent.atomic.AtomicInteger
@@ -22,6 +24,7 @@ class MileNavigationEnginePlugin2: FlutterPlugin, ActivityAware, Application.Act
     private var _activePOIChannel: EventChannel? = null
     private lateinit var _activity: Activity
     private lateinit var _context: Context
+    private lateinit var _messenger: BinaryMessenger
     private lateinit var binding: FlutterPlugin.FlutterPluginBinding
 
     private val state = AtomicInteger(0)
@@ -56,7 +59,6 @@ class MileNavigationEnginePlugin2: FlutterPlugin, ActivityAware, Application.Act
         _eventChannel = null
         _activePOIChannel!!.setStreamHandler(null)
         _activePOIChannel = null
-
     }
 
 
@@ -65,6 +67,7 @@ class MileNavigationEnginePlugin2: FlutterPlugin, ActivityAware, Application.Act
         _methodChannel = MethodChannel(messenger, "flutter_mapbox_navigation")
         _eventChannel = EventChannel(messenger, "flutter_mapbox_navigation/arrival")
         _activePOIChannel = EventChannel(messenger, "flutter_mapbox_navigation/active_poi")
+        _messenger = messenger
     }
 
     override fun onDetachedFromActivity() {
@@ -77,13 +80,9 @@ class MileNavigationEnginePlugin2: FlutterPlugin, ActivityAware, Application.Act
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         _activity = binding.activity
         _activity.application.registerActivityLifecycleCallbacks(this)
-        this.MileNavigationEngine2()
-        this.binding.platformViewRegistry.registerViewFactory("navigation_view", MileNavigationEngineFactory(this.state, _context, _activity as FragmentActivity))
-
-        //val handler = MileNavigationEngine(_context, _activity)
-        /*_eventChannel!!.setStreamHandler(handler)
-        _activePOIChannel!!.setStreamHandler(handler)
-        _methodChannel!!.setMethodCallHandler(handler)*/
+        this.MileNavigationEnginePlugin2()
+        var factory = MileNavigationEngineFactory(this.state, _context, _activity as FragmentActivity, _messenger)
+        this.binding.platformViewRegistry.registerViewFactory("navigation_view", factory)
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
@@ -135,7 +134,7 @@ class MileNavigationEnginePlugin2: FlutterPlugin, ActivityAware, Application.Act
         state.set(CREATED)
     }
 
-    private fun MileNavigationEngine2() {
+    private fun MileNavigationEnginePlugin2() {
         registrarActivityHashCode = _activity.hashCode()
     }
 }

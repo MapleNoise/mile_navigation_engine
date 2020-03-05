@@ -11,6 +11,9 @@ import com.mapbox.mapboxsdk.camera.CameraPosition;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import io.flutter.plugin.common.BinaryMessenger;
+import io.flutter.plugin.common.EventChannel;
+import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.StandardMessageCodec;
 import io.flutter.plugin.platform.PlatformView;
@@ -20,14 +23,16 @@ public class MileNavigationEngineFactory extends PlatformViewFactory {
 
     private final Context _context;
     private final FragmentActivity _activity;
+    private final BinaryMessenger _messenger;
 
     private final AtomicInteger mActivityState;
 
-    public MileNavigationEngineFactory(AtomicInteger state, Context context, FragmentActivity activity) {
+    public MileNavigationEngineFactory(AtomicInteger state, Context context, FragmentActivity activity, BinaryMessenger messenger) {
         super(StandardMessageCodec.INSTANCE);
         _context = context;
         _activity = activity;
         mActivityState = state;
+        _messenger = messenger;
     }
 
     @Override
@@ -51,6 +56,6 @@ public class MileNavigationEngineFactory extends PlatformViewFactory {
             mode = (String) params.get("mode");
         }
 
-        return builder.build(_context, _activity, route, gpsColor, accessToken, mode, mActivityState);
+        return builder.build(id, _context, _activity, route, gpsColor, accessToken, mode, mActivityState, _messenger);
     }
 }

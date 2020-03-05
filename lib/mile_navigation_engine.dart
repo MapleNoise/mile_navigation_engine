@@ -110,56 +110,50 @@ class MileNavigationEngine {
   }
 }
 
-typedef void OnNavigationFinished();
-typedef void OnActivePOI();
+typedef void MapCreatedCallback(MileNavigationController controller);
 
 class NavigationView extends StatefulWidget {
   final String route;
   final String gpsColor;
   final String accessToken;
   final String mode;
+  final MapCreatedCallback onMapCreated;
   final OnNavigationFinished onNavigationFinished;
   final OnActivePOI onActivePOI;
 
-  NavigationView({
+  const NavigationView({
     @required this.route,
     @required this.gpsColor,
     @required this.accessToken,
     @required this.mode,
-    @required this.onNavigationFinished,
-    @required this.onActivePOI,
+    this.onNavigationFinished,
+    this.onActivePOI,
+    @required this.onMapCreated,
   });
 
   _NavigationViewState createState() => _NavigationViewState();
 }
 
 class _NavigationViewState extends State<NavigationView> {
+
   Map<String, Object> args;
-  final Completer<MileNavigationEngine> _controller = Completer<MileNavigationEngine>();
+  final Completer<MileNavigationController> _controller = Completer<MileNavigationController>();
 
   @override
   initState() {
-    args = <String, dynamic>{
-      "currentRoute": widget.route,
-      "gpsColor": widget.gpsColor,
-      "accessToken": widget.accessToken,
-      "mode": widget.mode,
-    };
     super.initState();
   }
 
   Future<void> onPlatformViewCreated(int id) async {
-    final MileNavigationEngine navigationEngine = MileNavigationEngine(
-      onNavigationFinished: (arrived) {
-        widget.onNavigationFinished();
-        print("onNavigationFinished");
-      },
-      onActivePOI: (result) {
-        widget.onActivePOI();
-        print("Android POI is playing");
-      },
+    final MileNavigationController controller = await MileNavigationController.init(
+        id,
+        widget.onNavigationFinished,
+        widget.onActivePOI,
     );
-    _controller.complete(navigationEngine);
+    _controller.complete(controller);
+    if (widget.onMapCreated != null) {
+      widget.onMapCreated(controller);
+    }
   }
 
   @override
@@ -187,15 +181,5 @@ class _NavigationViewState extends State<NavigationView> {
         creationParamsCodec: const StandardMessageCodec(),
       );
     }
-
-
-    /*return SizedBox(
-      height: 350,
-      width: 350,
-      child: UiKitView(
-          viewType: "FlutterMapboxNavigationView",
-          creationParams: args,
-          creationParamsCodec: StandardMessageCodec()),
-    );*/
   }
 }

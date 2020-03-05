@@ -20,3 +20,4 @@ flutter:
   plugin:
     androidPackage: com.mile.mile_navigation_engine
     pluginClass: MileNavigationEnginePlugin
+

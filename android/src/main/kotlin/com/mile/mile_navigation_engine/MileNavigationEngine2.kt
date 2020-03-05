@@ -1,6 +1,5 @@
 package com.mile.mile_navigation_engine
 
-import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
@@ -8,14 +7,12 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.RectF
 import android.graphics.drawable.LayerDrawable
 import android.location.Location
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -98,12 +95,11 @@ import com.mile.mile_navigation_engine.Navigation.AppConfiguration
 import com.mile.mile_navigation_engine.Navigation.ApplicationRunner
 import com.mile.mile_navigation_engine.Navigation.service.AudioService
 import com.mile.mile_navigation_engine.Navigation.utils.IntentUtils
-import com.mile.mile_navigation_engine.activities.navigation.NavigateToPOIActivity
 import com.mile.mile_navigation_engine.activities.navigation.NavigationActivity
-import com.mile.mile_navigation_engine.activities.navigation.NavigationTreasureHuntActivity
 import com.mile.mile_navigation_engine.interfaces.MP3Listener
 import com.mile.mile_navigation_engine.model.*
 import com.mile.mile_navigation_engine.utils.*
+import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -123,7 +119,17 @@ import java.util.concurrent.atomic.AtomicInteger
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class MileNavigationEngine2 : Application.ActivityLifecycleCallbacks, MethodChannel.MethodCallHandler, EventChannel.StreamHandler, PlatformView, MapboxMap.OnMapLongClickListener, OnMapReadyCallback, MapboxMap.OnMapClickListener, ProgressChangeListener, MilestoneEventListener, OffRouteListener, NavigationListener, MP3Listener {
+class MileNavigationEngine2 : Application.ActivityLifecycleCallbacks,
+        MethodChannel.MethodCallHandler,
+        PlatformView,
+        MapboxMap.OnMapLongClickListener,
+        OnMapReadyCallback,
+        MapboxMap.OnMapClickListener,
+        ProgressChangeListener,
+        MilestoneEventListener,
+        OffRouteListener,
+        NavigationListener,
+        MP3Listener {
 
     var _activity: FragmentActivity
     var _context: Context
@@ -133,6 +139,8 @@ class MileNavigationEngine2 : Application.ActivityLifecycleCallbacks, MethodChan
 
     private var mainView: View
 
+    private var mapReadyResult: MethodChannel.Result? = null
+
     var _distanceRemaining: Double? = null
     var _durationRemaining: Double? = null
 
@@ -141,9 +149,14 @@ class MileNavigationEngine2 : Application.ActivityLifecycleCallbacks, MethodChan
     var accessToken = ""
     var mode = ""
 
+    private var methodChannel: MethodChannel? = null
+
+    var id: Int = -1
+
     var PERMISSION_REQUEST_CODE: Int = 367
 
-    constructor(context: Context, activity: FragmentActivity, route: String, gpsColor: String, accessToken: String, mode: String, state: AtomicInteger) {
+    constructor(id: Int, context: Context, messenger: BinaryMessenger, activity: FragmentActivity, route: String, gpsColor: String, accessToken: String, mode: String, state: AtomicInteger) {
+        this.id = id
         this._context = context
         this._activity = activity;
         this.route = route
@@ -152,6 +165,9 @@ class MileNavigationEngine2 : Application.ActivityLifecycleCallbacks, MethodChan
         this.mode = mode
         this.activityState = state
         this.registrarActivityHashCode = _activity.hashCode()
+
+        this.methodChannel = MethodChannel(messenger, "flutter_mapbox_navigation_"+id)
+        this.methodChannel!!.setMethodCallHandler(this)
 
         _activity.setTheme(R.style.CustomInstructionView)
         Mapbox.getInstance(_activity, accessToken)
@@ -237,75 +253,21 @@ class MileNavigationEngine2 : Application.ActivityLifecycleCallbacks, MethodChan
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-
         var arguments = call.arguments as? Map<String, Any>
 
-        if (call.method == "getPlatformVersion") {
-            result.success("Android ${android.os.Build.VERSION.RELEASE}")
-        }
-        else if(call.method == "getDistanceRemaining") {
-            result.success(_distanceRemaining);
-        } else if(call.method == "getDurationRemaining") {
-            result.success(_durationRemaining);
-        } else if(call.method == "startNavigation") {
+        when (call.method) {
+            "map#waitForMap" -> {
 
-            val route = arguments?.get("currentRoute") as? String
-            val gpsColor = arguments?.get("gpsColor") as? String
-            val accessToken = arguments?.get("accessToken") as? String
-            val mode = arguments?.get("mode") as? String
-
-            if(route != null && gpsColor != null && accessToken != null && mode != null) {
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    var haspermission = _activity.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                    if(haspermission != PackageManager.PERMISSION_GRANTED) {
-                        //_activity.onRequestPermissionsResult((a,b,c) => onRequestPermissionsResult)
-                        _activity.requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_REQUEST_CODE)
-                        startNavigation(route, gpsColor, accessToken, mode)
-                    } else
-                        startNavigation(route, gpsColor, accessToken, mode)
+                if (::mapboxMap.isInitialized) {
+                    result.success(null);
+                    return;
                 }
-                else
-                    startNavigation(route, gpsColor, accessToken, mode)
+                mapReadyResult = result;
             }
-        }
-        else {
-            result.notImplemented()
-        }
-    }
-
-    fun startNavigation(route: String, gpsColor: String, accessToken: String, mode: String) {
-        Mapbox.getInstance(_context, accessToken)
-
-        flutterRouteToKtRoute(route, gpsColor)
-
-        var intent: Intent? = null;
-        if(mode == NavigationMode.NAVIGATE_IN_ROUTE) {
-            intent = Intent(_activity, NavigationActivity::class.java)
-        } else if(mode == NavigationMode.NAVIGATE_TO_POI) {
-            intent = Intent(_activity, NavigateToPOIActivity::class.java)
-        } else if(mode == NavigationMode.TREASURE_HUNT) {
-            intent = Intent(_activity, NavigationTreasureHuntActivity::class.java)
-        }
-
-        _activity.startActivity(intent)
-    }
-
-    override fun onListen(args: Any?, events: EventChannel.EventSink?) {
-        if(args is ArrayList<*>) {
-            if(args[0] == "finish_navigation") {
-                AppDataHolder._eventSink = events;
-            } else if(args[0] == "active_poi") {
-                AppDataHolder._eventActivePOI = events;
-            }
+            else -> throw IllegalArgumentException(
+                    "Cannot interpret " + activityState!!.get() + " as an activity state");
         }
     }
-
-    override fun onCancel(args: Any?) {
-        AppDataHolder._eventSink = null;
-        AppDataHolder._eventActivePOI = null;
-    }
-
 
     fun flutterRouteToKtRoute(routeJson: String?, gpsColor: String?) {
 
@@ -695,7 +657,7 @@ class MileNavigationEngine2 : Application.ActivityLifecycleCallbacks, MethodChan
         }
 
         closeNavigation!!.setOnClickListener {
-            AppDataHolder._eventSink?.success(true)
+
             //finish()
         }
     }
@@ -791,6 +753,11 @@ class MileNavigationEngine2 : Application.ActivityLifecycleCallbacks, MethodChan
     }
 
     override fun dispose() {
+
+        val arguments: MutableMap<String, Any> = java.util.HashMap(1)
+        arguments["isFinished"] = false
+        methodChannel!!.invokeMethod("onNavigationFinished", arguments)
+
         if (disposed) {
             return
         }
@@ -799,7 +766,24 @@ class MileNavigationEngine2 : Application.ActivityLifecycleCallbacks, MethodChan
         if (circleManager != null) {
             circleManager.onDestroy()
         }
+        mapboxMap.locationComponent.isLocationComponentEnabled = false
+
         mapView.onDestroy()
+        audioService.stopAudioService(false)
+
+        // Ensure proper shutdown of the SpeechPlayer
+        if (speechPlayer != null) {
+            speechPlayer!!.onDestroy()
+        }
+
+        // Prevent leaks
+        removeLocationEngineListener()
+
+        (navigation!!.cameraEngine as DynamicCamera).clearMap()
+
+        // MapboxNavigation will shutdown the LocationEngine
+        navigation!!.onDestroy()
+        _activity.application.unregisterActivityLifecycleCallbacks(this)
     }
 
 
@@ -906,6 +890,10 @@ class MileNavigationEngine2 : Application.ActivityLifecycleCallbacks, MethodChan
          */
         override fun onMapReady(mapboxMap: MapboxMap) {
             this.mapboxMap = mapboxMap
+            if (mapReadyResult != null) {
+                mapReadyResult!!.success(null)
+                mapReadyResult = null
+            }
             this.mapboxMap.addOnMapClickListener(this)
             mapboxMap.setStyle(Style.Builder().fromUri(_activity.getString(R.string.map_uri))) { style ->
 
@@ -1476,7 +1464,7 @@ class MileNavigationEngine2 : Application.ActivityLifecycleCallbacks, MethodChan
             isMapboxSpeakerMuted = checkIfMapboxSpeakIsMuted(userLocation, currentBlockerPOI) // Should we read POI ?
             AppDataHolder.currentRoute!!.arrayPois.forEach { poi ->
                 MapUtils.getDistancesFromPOI(userLocation, poi).forEach { distance -> // Checking distance from every POI
-                    Log.d("checkIfUserIsNearPOI", "distance from POI ${poi.name}: $distance <? ${((poi.radius).toFloat()/1000).toDouble()}")
+                    //Log.d("checkIfUserIsNearPOI", "distance from POI ${poi.name}: $distance <? ${((poi.radius).toFloat()/1000).toDouble()}")
                     if(distance <= ((poi.radius).toFloat()/1000).toDouble()){ // If user is the POI radius
                         // If the poi is made to block mapbox intructions
                         if(poi.doesBlockMapboxSpeaker != null && poi.doesBlockMapboxSpeaker){
@@ -1511,7 +1499,10 @@ class MileNavigationEngine2 : Application.ActivityLifecycleCallbacks, MethodChan
                                         else{
                                             audioService.playTTS(poi.description, false, true)
                                         }
-                                        AppDataHolder._eventActivePOI?.success("YOUHOU");
+
+                                        val arguments: MutableMap<String, Any> = java.util.HashMap(1)
+                                        arguments["poi"] = "{}"
+                                        methodChannel!!.invokeMethod("onActivePOI", arguments)
                                     }
                                     else{ // We don't read any description, simply a generic message
                                         audioService.playTTS(LanguageResource.languagesResources.infoPOINearby, true, true)

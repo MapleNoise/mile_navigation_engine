@@ -35,7 +35,7 @@ class _AboutState extends State<About> {
             color: Colors.black,
           ),
           title: Text(
-            "Modal",
+            "About",
             style: TextStyle(
               fontWeight: FontWeight.w600,
               color: Colors.black,
