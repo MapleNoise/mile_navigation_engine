@@ -120,6 +120,7 @@ class NavigationView extends StatefulWidget {
   final MapCreatedCallback onMapCreated;
   final OnNavigationFinished onNavigationFinished;
   final OnActivePOI onActivePOI;
+  final OnNavigationStarted onNavigationStarted;
 
   const NavigationView({
     @required this.route,
@@ -128,6 +129,7 @@ class NavigationView extends StatefulWidget {
     @required this.mode,
     this.onNavigationFinished,
     this.onActivePOI,
+    this.onNavigationStarted,
     @required this.onMapCreated,
   });
 
@@ -149,6 +151,7 @@ class _NavigationViewState extends State<NavigationView> {
         id,
         widget.onNavigationFinished,
         widget.onActivePOI,
+        widget.onNavigationStarted,
     );
     _controller.complete(controller);
     if (widget.onMapCreated != null) {

@@ -24,7 +24,7 @@ extension NavigationRouteView
             if(AppDataHolder.flutterNavigationMode == NavigationMode.NAVIGATE_IN_ROUTE){
                 wPoint = [Waypoint.init(coordinate: location.coordinate),waypoint]
             } else if(AppDataHolder.flutterNavigationMode == NavigationMode.NAVIGATE_TO_POI){
-                wPoint = [Waypoint.init(coordinate: location.coordinate), Waypoint.init(coordinate: (self.object?.pois[0].coordinatesGPX[0])!) ]
+                wPoint = [Waypoint.init(coordinate: location.coordinate), Waypoint.init(coordinate: (self.object?.pois[0].coordinatesGPX[0])!) ] //navigate to poi selected
             }
             let option = NavigationRouteOptions(waypoints: wPoint, profileIdentifier: .walking)
             option.locale = Locale.init(identifier: Utils.getLanguageAndCountry())

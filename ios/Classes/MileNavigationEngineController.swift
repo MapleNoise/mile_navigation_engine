@@ -10,14 +10,7 @@ import UIKit
 import Mapbox
 
 class MileNavigationEngineController: NSObject, FlutterPlatformView, MGLMapViewDelegate {
-
-    //private var registrar: FlutterPluginRegistrar
-    //private var channel: FlutterMethodChannel?
     private var navigationView: UIView?
-
-
-    /*private var isMapReady = false
-    private var mapReadyResult: FlutterResult?*/
 
     func view() -> UIView {
         return navigationView!
@@ -32,9 +25,6 @@ class MileNavigationEngineController: NSObject, FlutterPlatformView, MGLMapViewD
         let oMode = arguments?["mode"] as? String
 
         super.init()
-
-        /*channel = FlutterMethodChannel(name: "flutter_mapbox_navigation_\(viewId)", binaryMessenger: registrar.messenger())
-        channel!.setMethodCallHandler(onMethodCall)*/
 
         let dict = convertToDictionary(text: oRoute!)
         var route = RouteInformmation.init(snapshotValue: dict!)
@@ -55,20 +45,6 @@ class MileNavigationEngineController: NSObject, FlutterPlatformView, MGLMapViewD
         controller.modalPresentationStyle = .fullScreen
         navigationView = controller.view
     }
-
-    /*func onMethodCall(methodCall: FlutterMethodCall, result: @escaping FlutterResult) {
-        switch(methodCall.method) {
-        case "map#waitForMap":
-            if isMapReady {
-                result(nil)
-            } else {
-                mapReadyResult = result
-            }
-
-        default:
-            result(FlutterMethodNotImplemented)
-        }
-    }*/
 
     func convertToDictionary(text: String) -> [String: Any]? {
         if let data = text.data(using: .utf8) {

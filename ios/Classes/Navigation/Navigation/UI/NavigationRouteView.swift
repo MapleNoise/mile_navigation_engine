@@ -85,8 +85,9 @@ class NavigationRouteView: UIViewController,FloatingPanelControllerDelegate {
     var checkNearsetPoint = true
     var isProgressing = true
     var isPaused = false
-    var flutterNavigationMode = ""
 
+
+    var flutterNavigationMode = ""
     var channel: FlutterMethodChannel?
     var isMapReady = false
     var mapReadyResult: FlutterResult?
@@ -102,8 +103,7 @@ class NavigationRouteView: UIViewController,FloatingPanelControllerDelegate {
         super.viewDidLoad()
         presenter = NavigationPresenter(view: self)
 
-        channel = FlutterMethodChannel(name: "flutter_mapbox_navigation_\(viewId)", binaryMessenger: registrar.messenger())
-        channel!.setMethodCallHandler(onMethodCall)
+        initFlutterChannel()
         
         DispatchQueue.main.async {
              self.initLocationManager()
@@ -115,20 +115,6 @@ class NavigationRouteView: UIViewController,FloatingPanelControllerDelegate {
             self.longGesture = UILongPressGestureRecognizer(target: self, action: #selector(self.longPress(_:)))
             self.longGesture.minimumPressDuration = 3
             self.pauseAndStop_btn.addGestureRecognizer(self.longGesture)
-        }
-    }
-
-    func onMethodCall(methodCall: FlutterMethodCall, result: @escaping FlutterResult) {
-        switch(methodCall.method) {
-        case "map#waitForMap":
-            if isMapReady {
-                result(nil)
-            } else {
-                mapReadyResult = result
-            }
-
-        default:
-            result(FlutterMethodNotImplemented)
         }
     }
     
@@ -157,9 +143,6 @@ class NavigationRouteView: UIViewController,FloatingPanelControllerDelegate {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        channel?.invokeMethod("onNavigationFinished", arguments: [
-            "isFinished": false,
-        ])
         deinitNavigation()
     }
     
@@ -247,11 +230,13 @@ class NavigationRouteView: UIViewController,FloatingPanelControllerDelegate {
                 self.fpc.surfaceView.cornerRadius = 30.0
                 self.contentVC = StatisticsRouter.createViewController(parentViewController: self) as?  StatisticsView
                 self.contentVC!.set(object: StatisticsEntity(distance: self.distanceValue_lbl.text, speed: self.speedValue_lbl.text, time: self.timeValue_lbl.text))
+                self.contentVC?.delegate = self
                 self.fpc.set(contentViewController: self.contentVC)
                 self.fpc.addPanel(toParent: self)
             }
         }
     }
+
     
     @IBAction func pause_action(_ sender: Any) {
         
@@ -264,7 +249,7 @@ class NavigationRouteView: UIViewController,FloatingPanelControllerDelegate {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+3) {
                 self.initTheNavigationtoTheRoute()
             }
-            
+            flutterPauseActionStartNavigation()
             break
         case .navigation:
             

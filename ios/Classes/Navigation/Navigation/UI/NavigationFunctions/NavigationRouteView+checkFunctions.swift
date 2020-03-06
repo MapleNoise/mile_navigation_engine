@@ -125,9 +125,7 @@ extension NavigationRouteView
                             object!.pois![index].status = .isPlaying
                             AudioServicesPlayAlertSoundWithCompletion(SystemSoundID(kSystemSoundID_Vibrate)) { }
 
-                            channel?.invokeMethod("onActivePOI", arguments: [
-                                "poi": "{}",
-                            ])
+                            flutterDetectPOI()
 
                             if let player = self.voiceController?.audioPlayer
                             {

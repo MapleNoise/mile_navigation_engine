@@ -16,13 +16,14 @@ class StatisticsView: UIViewController {
     @IBOutlet weak var question_lbl: UILabel!
     
     @IBOutlet weak var timeTitle_lbl: UILabel!
-       @IBOutlet weak var timeValue_lbl: UILabel!
-       @IBOutlet weak var distanceTitle_lbl: UILabel!
-       @IBOutlet weak var distanceValue_lbl: UILabel!
-       @IBOutlet weak var speedTitle_lbl: UILabel!
-       @IBOutlet weak var speedValue_lbl: UILabel!
-    
-    
+    @IBOutlet weak var timeValue_lbl: UILabel!
+    @IBOutlet weak var distanceTitle_lbl: UILabel!
+    @IBOutlet weak var distanceValue_lbl: UILabel!
+    @IBOutlet weak var speedTitle_lbl: UILabel!
+    @IBOutlet weak var speedValue_lbl: UILabel!
+
+    weak var delegate: onStatisticClosed?
+
     private let ui = StatisticsViewUI()
     private var presenter: StatisticsPresenterProtocol!
     
@@ -66,6 +67,7 @@ class StatisticsView: UIViewController {
         
     }
     @IBAction func finish_action(_ sender: Any) {
+        delegate?.onStatisticClosed()
         dismiss(animated: true, completion: nil)
     }
     

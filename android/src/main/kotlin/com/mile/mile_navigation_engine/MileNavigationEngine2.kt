@@ -243,7 +243,7 @@ class MileNavigationEngine2 : Application.ActivityLifecycleCallbacks,
 
         AudioService.getInstance().init(_context, _activity.application)
 
-        initToolbar()
+        //initToolbar()
         initView()
         initListeners()
 
@@ -605,18 +605,14 @@ class MileNavigationEngine2 : Application.ActivityLifecycleCallbacks,
         }
     }
 
-    private fun initToolbar(){
-        /*setSupportActionBar(toolbar)
-        toolbar.setNavigationOnClickListener {
-            finish()
-        }
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)*/
-    }
-
     private fun initListeners() {
         navigationStateButton!!.setOnClickListener {
             if(navigationState == NavigationState.WAITING_TO_START){
+
+                val arguments: MutableMap<String, Any> = java.util.HashMap(1)
+                arguments["isStarted"] = true
+                methodChannel!!.invokeMethod("onNavigationStarted", arguments)
+
                 hasUserRequestedNavigation = true
                 manageNavigationState()
                 showLoadingGPS(true, _activity.getString(R.string.message_generating_route))
@@ -648,7 +644,7 @@ class MileNavigationEngine2 : Application.ActivityLifecycleCallbacks,
         }
 
         finishButton!!.setOnClickListener {
-            //finishNavigation(false)
+            finishNavigation(false)
         }
 
         recenterButton!!.setOnClickListener {
@@ -657,8 +653,9 @@ class MileNavigationEngine2 : Application.ActivityLifecycleCallbacks,
         }
 
         closeNavigation!!.setOnClickListener {
-
-            //finish()
+            val arguments: MutableMap<String, Any> = java.util.HashMap(1)
+            arguments["isFinished"] = false //TODO 75%
+            methodChannel!!.invokeMethod("onNavigationFinished", arguments)
         }
     }
 
@@ -753,10 +750,6 @@ class MileNavigationEngine2 : Application.ActivityLifecycleCallbacks,
     }
 
     override fun dispose() {
-
-        val arguments: MutableMap<String, Any> = java.util.HashMap(1)
-        arguments["isFinished"] = false
-        methodChannel!!.invokeMethod("onNavigationFinished", arguments)
 
         if (disposed) {
             return

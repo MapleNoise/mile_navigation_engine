@@ -13,8 +13,7 @@ import MapboxNavigation
 extension NavigationRouteView: MGLMapViewDelegate {
     
     func mapViewDidFinishLoadingMap(_ mapView: MGLMapView) {
-        isMapReady = true
-        mapReadyResult?(nil)
+        flutterMapViewDidFinishLoadingMap()
         calculateWaypoints {
             //self.initTheNavigationtoTheRoute()
         }
