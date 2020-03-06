@@ -22,6 +22,8 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
 	<key>MGLMapboxAccessToken</key>
 	<string>pk.eyJ1IjoibWlsZS1kZXYiLCJhIjoiY2sxcTY0aTV6MTE3dzNtbzdvaWRvMG93aCJ9.S-nBIeWTBrZP5eAwomqmgA</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

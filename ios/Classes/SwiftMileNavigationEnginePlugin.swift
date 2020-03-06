@@ -11,7 +11,7 @@ public class SwiftMileNavigationEnginePlugin: NSObject, FlutterPlugin, FlutterSt
       var _durationRemaining: Double?
       var _navigationMode: String?
 
-    public static func register(with registrar: FlutterPluginRegistrar) {
+    /*public static func register(with registrar: FlutterPluginRegistrar) {
       let channel = FlutterMethodChannel(name: "flutter_mapbox_navigation", binaryMessenger: registrar.messenger())
       let eventChannel = FlutterEventChannel(name: "flutter_mapbox_navigation/arrival", binaryMessenger: registrar.messenger())
       let activePOIChannel = FlutterEventChannel(name: "flutter_mapbox_navigation/active_poi", binaryMessenger: registrar.messenger())
@@ -23,7 +23,13 @@ public class SwiftMileNavigationEnginePlugin: NSObject, FlutterPlugin, FlutterSt
 
       let viewFactory = FlutterMapboxNavigationViewFactory()
       registrar.register(viewFactory, withId: "FlutterMapboxNavigationView")
+    }*/
 
+    public static func register(with registrar: FlutterPluginRegistrar) {
+        let instance = MileNavigationEngineFactory(withRegistrar: registrar)
+        registrar.register(instance, withId: "navigation_view")
+
+        //let channel = FlutterMethodChannel(name: "flutter_mapbox_navigation", binaryMessenger: registrar.messenger())
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -149,7 +155,7 @@ public class SwiftMileNavigationEnginePlugin: NSObject, FlutterPlugin, FlutterSt
       }
   }
 
-  public class FlutterMapboxNavigationViewFactory : NSObject, FlutterPlatformViewFactory
+  /*public class FlutterMapboxNavigationViewFactory : NSObject, FlutterPlatformViewFactory
   {
       public func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
           return FlutterMapboxNavigationView(frame, viewId: viewId, args: args)
@@ -192,4 +198,4 @@ public class SwiftMileNavigationEnginePlugin: NSObject, FlutterPlugin, FlutterSt
 
           return navView
       }
-}
+}*/

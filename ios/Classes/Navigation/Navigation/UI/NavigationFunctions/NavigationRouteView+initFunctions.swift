@@ -30,11 +30,7 @@ extension NavigationRouteView
     }
     
     
-    func initTheNavigationtoTheRoute()
-    {
-        //ITS A TEST POUR EVITER DE PERDRE DU TEMPS 
-        AppDataHolder.eventActivePOI!("{\"result\" : true}");
-
+    func initTheNavigationtoTheRoute() {
         calculateWayToRoute { (routes) in
             if let route = routes?.first
             {

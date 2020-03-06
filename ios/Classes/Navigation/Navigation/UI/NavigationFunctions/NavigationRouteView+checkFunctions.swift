@@ -125,7 +125,9 @@ extension NavigationRouteView
                             object!.pois![index].status = .isPlaying
                             AudioServicesPlayAlertSoundWithCompletion(SystemSoundID(kSystemSoundID_Vibrate)) { }
 
-                            AppDataHolder.eventActivePOI!("{\"result\" : true}");
+                            channel?.invokeMethod("onActivePOI", arguments: [
+                                "poi": "{}",
+                            ])
 
                             if let player = self.voiceController?.audioPlayer
                             {

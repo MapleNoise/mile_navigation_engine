@@ -15,4 +15,6 @@ struct NavigationEntity {
     var directionals:[PointOfInterest]!
     var checkNearsetPoint : Bool
     var startingPoint : Int = 0
+    var registrar: FlutterPluginRegistrar!
+    var viewId: Int64!
 }

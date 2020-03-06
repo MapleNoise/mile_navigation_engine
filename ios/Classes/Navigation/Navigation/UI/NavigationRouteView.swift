@@ -87,6 +87,13 @@ class NavigationRouteView: UIViewController,FloatingPanelControllerDelegate {
     var isPaused = false
     var flutterNavigationMode = ""
 
+    var channel: FlutterMethodChannel?
+    var isMapReady = false
+    var mapReadyResult: FlutterResult?
+    var registrar: FlutterPluginRegistrar!
+    var viewId: Int64 = -1
+
+
     var timestamp : Int64?
     var bannerViewAnimated = false
     // Restez appuyé pour mettre en pause
@@ -94,7 +101,10 @@ class NavigationRouteView: UIViewController,FloatingPanelControllerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         presenter = NavigationPresenter(view: self)
-       
+
+        channel = FlutterMethodChannel(name: "flutter_mapbox_navigation_\(viewId)", binaryMessenger: registrar.messenger())
+        channel!.setMethodCallHandler(onMethodCall)
+        
         DispatchQueue.main.async {
              self.initLocationManager()
             self.initUI()
@@ -105,6 +115,20 @@ class NavigationRouteView: UIViewController,FloatingPanelControllerDelegate {
             self.longGesture = UILongPressGestureRecognizer(target: self, action: #selector(self.longPress(_:)))
             self.longGesture.minimumPressDuration = 3
             self.pauseAndStop_btn.addGestureRecognizer(self.longGesture)
+        }
+    }
+
+    func onMethodCall(methodCall: FlutterMethodCall, result: @escaping FlutterResult) {
+        switch(methodCall.method) {
+        case "map#waitForMap":
+            if isMapReady {
+                result(nil)
+            } else {
+                mapReadyResult = result
+            }
+
+        default:
+            result(FlutterMethodNotImplemented)
         }
     }
     
@@ -133,6 +157,9 @@ class NavigationRouteView: UIViewController,FloatingPanelControllerDelegate {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        channel?.invokeMethod("onNavigationFinished", arguments: [
+            "isFinished": false,
+        ])
         deinitNavigation()
     }
     
@@ -311,6 +338,8 @@ class NavigationRouteView: UIViewController,FloatingPanelControllerDelegate {
 extension NavigationRouteView: NavigationViewProtocol {
     func set(object: NavigationEntity) {
         self.object = object
+        self.registrar = object.registrar
+        self.viewId = object.viewId
         self.indexStartingPoint = object.startingPoint
         checkNearsetPoint = object.checkNearsetPoint
     }
