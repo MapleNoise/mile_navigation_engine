@@ -1,5 +1,6 @@
 package com.mile.mile_navigation_engine.utils
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import com.mapbox.api.directions.v5.models.DirectionsRoute
@@ -22,7 +23,7 @@ class OfflineRouteManager {
 
         var offlineRouter = MapboxOfflineRouter("mythalassa")
 
-        fun fetchTileVersions(){
+        fun fetchTileVersions(ctx: Context){
             offlineRouter.fetchAvailableTileVersions(Mapbox.getAccessToken(), object :
                 OnTileVersionsFoundCallback {
                 override fun onVersionsFound(availableVersions: List<String>) {
@@ -31,7 +32,7 @@ class OfflineRouteManager {
                 }
 
                 override fun onError(error: OfflineError) {
-                    Toast.makeText(ApplicationRunner.instance, "Unable to get versions", Toast.LENGTH_LONG).show()
+                    Toast.makeText(ctx, "Unable to get versions", Toast.LENGTH_LONG).show()
                 }
             })
         }

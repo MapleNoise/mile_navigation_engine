@@ -233,7 +233,7 @@ class NavigationActivity : AppCompatActivity(), OnMapReadyCallback,
 
         Mapbox.getInstance(this, getString(R.string.access_token))
 
-        OfflineRouteManager.fetchTileVersions()
+        //OfflineRouteManager.fetchTileVersions()
 
         mapView = findViewById(R.id.mapView)
         navigationLayout = findViewById(R.id.componentNavigationLayout)

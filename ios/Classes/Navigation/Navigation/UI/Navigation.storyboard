@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -10,7 +11,7 @@
         <!--Navigation Route View-->
         <scene sceneID="VcU-8Q-0Oq">
             <objects>
-                <viewController storyboardIdentifier="NavigationRouteView" id="o2s-C0-V9l" customClass="NavigationRouteView" customModule="ProjectEngineFlutter" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NavigationRouteView" id="o2s-C0-V9l" customClass="NavigationRouteView" customModule="mile_navigation_engine" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rpk-ud-mJq">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -18,6 +19,22 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uJR-Xp-a6I" customClass="MBNavigationMapView">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fbq-AJ-jDc" customClass="GradientView" customModule="mile_navigation_engine" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="44" width="414" height="56"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="70" id="KgW-rs-gx1"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="firstColor">
+                                        <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="secondColor">
+                                        <color key="value" white="1" alpha="0.042112585616438353" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isHorizontal" value="NO"/>
+                                </userDefinedRuntimeAttributes>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="IaJ-mO-6YD">
                                 <rect key="frame" x="246" y="433" width="148" height="30"/>
@@ -70,7 +87,7 @@
                                     <constraint firstItem="0c6-NN-g8j" firstAttribute="leading" secondItem="rlZ-Qa-int" secondAttribute="leading" id="H7o-EM-LjE"/>
                                     <constraint firstAttribute="trailing" secondItem="0c6-NN-g8j" secondAttribute="trailing" id="HSV-gb-laB"/>
                                     <constraint firstAttribute="bottom" secondItem="0c6-NN-g8j" secondAttribute="bottom" id="f6t-qY-L6w"/>
-                                    <constraint firstAttribute="height" constant="170" id="pQV-5W-wmS"/>
+                                    <constraint firstAttribute="height" constant="120" id="pQV-5W-wmS"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uYh-XV-5tP">
@@ -286,10 +303,12 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="rlZ-Qa-int" firstAttribute="top" secondItem="rpk-ud-mJq" secondAttribute="top" constant="-170" id="2GY-gs-7rh"/>
+                            <constraint firstItem="rlZ-Qa-int" firstAttribute="top" secondItem="rpk-ud-mJq" secondAttribute="top" constant="-120" id="2GY-gs-7rh"/>
+                            <constraint firstItem="fbq-AJ-jDc" firstAttribute="trailing" secondItem="NT9-pM-c2g" secondAttribute="trailing" id="2YG-e7-VuW"/>
                             <constraint firstItem="rlZ-Qa-int" firstAttribute="leading" secondItem="NT9-pM-c2g" secondAttribute="leading" id="5RL-1w-rSA"/>
                             <constraint firstItem="NT9-pM-c2g" firstAttribute="bottom" secondItem="uYh-XV-5tP" secondAttribute="bottom" constant="25" id="79N-Ij-FFi"/>
                             <constraint firstItem="uYh-XV-5tP" firstAttribute="top" secondItem="1nA-eU-M2P" secondAttribute="bottom" constant="7" id="Ftx-W0-669"/>
+                            <constraint firstItem="fbq-AJ-jDc" firstAttribute="leading" secondItem="NT9-pM-c2g" secondAttribute="leading" id="HbV-BI-cXU"/>
                             <constraint firstItem="NT9-pM-c2g" firstAttribute="trailing" secondItem="IaJ-mO-6YD" secondAttribute="trailing" constant="20" id="Q1N-d9-YK2"/>
                             <constraint firstItem="rlZ-Qa-int" firstAttribute="trailing" secondItem="NT9-pM-c2g" secondAttribute="trailing" id="SUi-qB-8re"/>
                             <constraint firstItem="uJR-Xp-a6I" firstAttribute="trailing" secondItem="NT9-pM-c2g" secondAttribute="trailing" id="TVB-C1-UbP"/>
@@ -298,6 +317,7 @@
                             <constraint firstItem="NT9-pM-c2g" firstAttribute="trailing" secondItem="uYh-XV-5tP" secondAttribute="trailing" constant="15" id="gU4-Wh-Pt0"/>
                             <constraint firstItem="IaJ-mO-6YD" firstAttribute="centerY" secondItem="rpk-ud-mJq" secondAttribute="centerY" id="kQH-iQ-q6g"/>
                             <constraint firstItem="uYh-XV-5tP" firstAttribute="leading" secondItem="NT9-pM-c2g" secondAttribute="leading" constant="15" id="knk-Ll-dPc"/>
+                            <constraint firstItem="fbq-AJ-jDc" firstAttribute="top" secondItem="NT9-pM-c2g" secondAttribute="top" id="nbM-Ns-gv8"/>
                             <constraint firstItem="uJR-Xp-a6I" firstAttribute="top" secondItem="rpk-ud-mJq" secondAttribute="top" id="nlj-1G-z52"/>
                             <constraint firstAttribute="bottom" secondItem="uJR-Xp-a6I" secondAttribute="bottom" id="rWi-hc-Jf9"/>
                             <constraint firstItem="8bA-Zg-Y7t" firstAttribute="leading" secondItem="NT9-pM-c2g" secondAttribute="leading" constant="10" id="sMW-Yo-N8X"/>

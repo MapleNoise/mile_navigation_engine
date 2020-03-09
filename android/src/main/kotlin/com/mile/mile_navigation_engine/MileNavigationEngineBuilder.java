@@ -6,14 +6,18 @@ import androidx.fragment.app.FragmentActivity;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import io.flutter.plugin.common.BinaryMessenger;
-import io.flutter.plugin.common.EventChannel;
-import io.flutter.plugin.common.MethodChannel;
 
 
 public class MileNavigationEngineBuilder {
 
-    MileNavigationEngine2 build(int id, Context context, FragmentActivity activity, String route, String gpsColor, String accessToken, String mode, AtomicInteger state, BinaryMessenger messenger) {
-        final MileNavigationEngine2 controller = new MileNavigationEngine2(id, context, messenger, activity, route, gpsColor, accessToken, mode, state);
+    MileNavigationEngine buildNavigation(int id, Context context, FragmentActivity activity, String route, String gpsColor, String accessToken, String mode, AtomicInteger state, BinaryMessenger messenger) {
+        final MileNavigationEngine controller = new MileNavigationEngine(id, context, messenger, activity, route, gpsColor, accessToken, mode, state);
+        controller.init();
+        return controller;
+    }
+
+    MileNavigationToPOIEngine buildNavigationToPOI(int id, Context context, FragmentActivity activity, String route, String gpsColor, String accessToken, String mode, AtomicInteger state, BinaryMessenger messenger) {
+        final MileNavigationToPOIEngine controller = new MileNavigationToPOIEngine(id, context, messenger, activity, route, gpsColor, accessToken, mode, state);
         controller.init();
         return controller;
     }

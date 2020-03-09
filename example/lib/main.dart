@@ -166,7 +166,7 @@ class _MyAppState extends State<MyApp> {
                 onTap: () {
                   Navigator.push(context,
                     MaterialPageRoute(
-                      builder: (context) => Navigation(),
+                      builder: (context) => Navigation(mode: NavigationMode.NAVIGATE_IN_ROUTE),
                     ),
                   );
                 },
@@ -177,6 +177,29 @@ class _MyAppState extends State<MyApp> {
                   child: Center(
                     child: Text(
                       "Go To navigation widget",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                )
+            ),
+            Container(height: 20,),
+            InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                    MaterialPageRoute(
+                      builder: (context) => Navigation(mode: NavigationMode.NAVIGATE_TO_POI),
+                    ),
+                  );
+                },
+                child: Container(
+                  height: 36,
+                  width: 200,
+                  color: Colors.blue,
+                  child: Center(
+                    child: Text(
+                      "Go navigation to poi widget",
                       style: TextStyle(
                         color: Colors.white,
                       ),
