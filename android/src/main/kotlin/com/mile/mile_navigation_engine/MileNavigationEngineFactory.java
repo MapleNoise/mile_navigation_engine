@@ -22,12 +22,12 @@ import io.flutter.plugin.platform.PlatformViewFactory;
 public class MileNavigationEngineFactory extends PlatformViewFactory {
 
     private final Context _context;
-    private final FragmentActivity _activity;
+    private final Activity _activity;
     private final BinaryMessenger _messenger;
 
     private final AtomicInteger mActivityState;
 
-    public MileNavigationEngineFactory(AtomicInteger state, Context context, FragmentActivity activity, BinaryMessenger messenger) {
+    public MileNavigationEngineFactory(AtomicInteger state, Context context, Activity activity, BinaryMessenger messenger) {
         super(StandardMessageCodec.INSTANCE);
         _context = context;
         _activity = activity;

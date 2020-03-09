@@ -130,7 +130,7 @@ class MileNavigationEngine : Application.ActivityLifecycleCallbacks,
         NavigationListener,
         MP3Listener {
 
-    var _activity: FragmentActivity
+    var _activity: Activity
     var _context: Context
     private var disposed = false
     private var activityState: AtomicInteger? = null
@@ -154,7 +154,7 @@ class MileNavigationEngine : Application.ActivityLifecycleCallbacks,
 
     var PERMISSION_REQUEST_CODE: Int = 367
 
-    constructor(id: Int, context: Context, messenger: BinaryMessenger, activity: FragmentActivity, route: String, gpsColor: String, accessToken: String, mode: String, state: AtomicInteger) {
+    constructor(id: Int, context: Context, messenger: BinaryMessenger, activity: Activity, route: String, gpsColor: String, accessToken: String, mode: String, state: AtomicInteger) {
         this.id = id
         this._context = context
         this._activity = activity;

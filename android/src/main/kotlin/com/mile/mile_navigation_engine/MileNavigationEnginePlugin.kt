@@ -79,7 +79,7 @@ class MileNavigationEnginePlugin: FlutterPlugin, ActivityAware, Application.Acti
         _activity = binding.activity
         _activity.application.registerActivityLifecycleCallbacks(this)
         this.MileNavigationEnginePlugin2()
-        var factory = MileNavigationEngineFactory(this.state, _context, _activity as FragmentActivity, _messenger)
+        var factory = MileNavigationEngineFactory(this.state, _context, _activity, _messenger)
         this.binding.platformViewRegistry.registerViewFactory("navigation_view", factory)
     }
 
