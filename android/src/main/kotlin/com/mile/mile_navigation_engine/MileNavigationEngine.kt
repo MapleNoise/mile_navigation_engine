@@ -175,7 +175,7 @@ class MileNavigationEngine : Application.ActivityLifecycleCallbacks,
         var inflater = _activity.layoutInflater;
         mainView = inflater.inflate(R.layout.activity_component_navigation, null)
 
-        OfflineRouteManager.fetchTileVersions(_context)
+        //OfflineRouteManager.fetchTileVersions(_context)
 
         this.callback = MileNavigationEngine.ComponentActivityLocationCallback(this)
 
@@ -1910,10 +1910,15 @@ class MileNavigationEngine : Application.ActivityLifecycleCallbacks,
 
             startingLocation = lastLocation
 
+            var profile = DirectionsCriteria.PROFILE_CYCLING
+            if(AppDataHolder.currentRoute!!.methodLocomotion != null) {
+                profile =  AppDataHolder.currentRoute!!.methodLocomotion!!.getDirectionCriteria()
+            }
+
             NavigationRoute.builder(_context)
                     .accessToken(this.accessToken)
                     .origin(MapUtils.convertLocationToPoint(lastLocation!!))
-                    .profile(AppDataHolder.currentRoute!!.methodLocomotion!!.getDirectionCriteria())
+                    .profile(profile)
                     .destination(closestRoutePoint!!)
                     .language(ApplicationRunner.appLanguage.getLocale())
                     .voiceUnits(DirectionsCriteria.METRIC)

@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'mile_navigation_engine'
-  s.version          = '0.0.10'
+  s.version          = '0.1.11'
   s.summary          = 'A new Flutter plugin.'
   s.description      = <<-DESC
 A new Flutter plugin.

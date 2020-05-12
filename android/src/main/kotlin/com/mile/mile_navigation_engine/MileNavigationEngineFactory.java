@@ -56,7 +56,7 @@ public class MileNavigationEngineFactory extends PlatformViewFactory {
             mode = (String) params.get("mode");
         }
 
-        if (mode == NavigationMode.Companion.getNAVIGATE_IN_ROUTE()) {
+        if (mode.equals(NavigationMode.Companion.getNAVIGATE_IN_ROUTE())) {
             return builder.buildNavigation(id, _context, _activity, route, gpsColor, accessToken, mode, mActivityState, _messenger);
         } else {
             return builder.buildNavigationToPOI(id, _context, _activity, route, gpsColor, accessToken, mode, mActivityState, _messenger);

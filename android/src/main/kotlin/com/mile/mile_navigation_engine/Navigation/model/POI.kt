@@ -87,7 +87,7 @@ data class POI(
                     5 -> drawableID = R.drawable.ic_maneuver_turn_45
                     6 -> drawableID = R.drawable.ic_maneuver_turn_75_left
                     7 -> drawableID = R.drawable.ic_maneuver_turn_75
-                    8 -> drawableID = R.drawable.ic_maneuver_turn_180_left
+                    8 -> drawableID = R.drawable.ic_maneuver_turn_180
                     9 -> drawableID = R.drawable.ic_maneuver_turn_180
                     10 -> drawableID = R.drawable.ic_maneuver_roundabout_straight
                     11 -> drawableID = R.drawable.ic_maneuver_roundabout_sharp_left

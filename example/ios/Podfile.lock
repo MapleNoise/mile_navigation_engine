@@ -20,7 +20,7 @@ PODS:
     - Solar (~> 2.1)
   - MapboxNavigationNative (6.2.1)
   - MapboxSpeech (0.1.1)
-  - mile_navigation_engine (0.0.10):
+  - mile_navigation_engine (0.1.11):
     - Animo
     - FloatingPanel
     - Flutter
